@@ -1,6 +1,5 @@
 var mongoose = require("mongoose"); 
 var instanceConfiguration = mongoose.Schema({
-commit_id: { type: String},
 vision_stack: {type: String},
 chat_stack: {type: String},
 }); 
@@ -9,6 +8,7 @@ var instanceSchema = mongoose.Schema({
 	docker_id: { type: String, required: true, unique: true }, 
 	token_id: { type: String, required: true}, 
 	in_session: { type: Number, required: true}, 
+	config: [ instanceConfiguration ]
 }, 
 { timestamps: true } 
 ); 

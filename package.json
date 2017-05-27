@@ -4,7 +4,8 @@
   "description": "Server side api for Hanson Environment for Application Development (HEAD). ",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
   },
   "keywords": [
     "HEAD"
@@ -14,9 +15,14 @@
   "dependencies": {
     "body-parser": "^1.17.1",
     "cors": "^2.8.3",
+    "dockerode": "^2.4.3",
     "express": "^4.15.2",
     "mocha": "^3.3.0",
     "mongoose": "^4.9.9",
-    "morgan": "^1.8.1"
+    "morgan": "^1.8.1",
+    "node-docker-api": "^1.1.12"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.18.12"
   }
 }
