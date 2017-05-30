@@ -40,6 +40,7 @@ instanceRouter.route('/instances')
 			docker_id: container.id, //TODO must use the configuration that is set on the system. 
 			token_id: req.body.instance_name + "_" +container.id, //TODO create a unique parameter for this. 
 			in_session: 0, //TODO increase when the user is actually accessing the system. 
+			started: false,
 			config: [
 				{
 					vision_stack: req.body.vision_tool,
