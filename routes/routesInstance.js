@@ -87,38 +87,37 @@ instanceRouter.route('/instances')
 
 	//TODO now do this, get all the instances and then check if i can 
 	//do delete all commands from this. 
-
 	Instances.find({}, function (err, instances) {
 		for (i = 0; i < instances.length; i++)
 		{
 			(function() {
-			var name = instances[i].name; 
-			var length = instances.length; 
-			var j = i; 
-			console.log('name to stop and delete ' + name); 
-			//TODO THE LOG FILES DON'T Accurately reflect the value of the system. 
-			var container = docker.getContainer(instances[i].name); 
-			container.stop(function(err, data){
-				if (err) console.log(err); 
-				console.log('stopped ' + name); 
+				var name = instances[i].name; 
+				var length = instances.length; 
+				var j = i; 
+				console.log('name to stop and delete ' + name); 
+				//TODO THE LOG FILES DON'T Accurately reflect the value of the system. 
+				var container = docker.getContainer(instances[i].name); 
+				container.stop(function(err, data){
+					if (err) console.log(err); 
+					console.log('stopped ' + name); 
 
-				container.remove(function (err, data) {
-					//TODO If the in_session users isn't zero, some kinda of warning would be necessary. 
-					var counter = instances.length; 
-					if (err) throw err; 
-					console.log('deleted ' + name); 
-					Instances.remove(name, function(err, resp) {
-						console.log('deleted from database ' + name); 
-						console.log(j); 
-						if(j === length-1)
-						{
-							res_ = [{'Deleted': 'Everything'}]; 
-							res.json(res_); 
-						}
+					container.remove(function (err, data) {
+						//TODO If the in_session users isn't zero, some kinda of warning would be necessary. 
+						var counter = instances.length; 
+						if (err) throw err; 
+						console.log('deleted ' + name); 
+						Instances.remove(name, function(err, resp) {
+							console.log('deleted from database ' + name); 
+							console.log(j); 
+							if(j === length-1)
+							{
+								res_ = [{'Deleted': 'Everything'}]; 
+								res.json(res_); 
+							}
+						}); 
 					}); 
-				}); 
-			});
-		})(); 
+				});
+			})(); 
 		}
 	}); 
 
@@ -126,7 +125,27 @@ instanceRouter.route('/instances')
 		//		if (err) throw err; 
 		//		console.log(resp); 
 		//		res.json(resp); 
-		//	}); 
+//	}); 
+}) 
+.put(function(req,res, next) {
+	//TODO use this to stop all instances. 
+	Instances.find({}, function (err, instances) {
+		for (i = 0; i < instances.length; i++)
+		{
+			(function() {
+				var name = instances[i].name; 
+				var length = instances.length; 
+				var j = i; 
+				Instances.findOneAndUpdate({"name":name}, {$set: req.body}, {new: true}, function (err, instance) {
+					if (err) throw err; 
+				}); 
+			})(); 
+		}
+	}); 
+	Instances.find({}, function (err, instances) { 
+		if (err) throw err; 
+		res.json(instances); 
+	}); 
 }); 
 instanceRouter.route('/instances/:instanceId')
 
@@ -135,6 +154,15 @@ instanceRouter.route('/instances/:instanceId')
 		if (err) throw err; 
 		res.json(instance); 
 	}); 
+})
+.put(function(req, res, next) {
+	//TODO use this to stop or start specific instance. 
+	Instances.findOneAndUpdate({ "name":req.params.instanceId},
+		{$set: req.body}, { new: true }, function (err, instance) {
+			if (err) throw err; 
+			res.json(instance); 
+			//TODO How can i check if certain script is up in docker? How do I stop it? 
+		}); 
 })
 .delete(function(req, res, next) {
 	console.log('Deleteing specific instance'); 
