@@ -20,34 +20,33 @@ client.connect('tcp://127.0.0.1:3111');
 	}) 
 
 	.post(function(req, res, next){
-		//TODO how can we create or spawn a docker instance in this place. 
-		//TODO now we have created the instance configuration. Let's populated
-		//it with values from the newInstance Instance variable. 
-		//TODO create Xvfb screen inititally may use another screen via python. 
+		//TODO creating port bindings in instance to instance basis and storing this in the db. 
 		client.invoke("create_display",req.body.instance_name, function(error, display, more) {
-			if(error) next("Zerorpc reporting Error"); 
+			if(error) console.log(error); 
 			console.log(display); 
 			docker.createContainer({
 				Image: 'hanson:work', 
 				AttachStdin: false, 
 				AttachStdout: true, 
 				AttachStderr: true, 
+				Entrypoint: [""],
 				Env: ["DISPLAY=:"+String(display),"QT_X11_NO_MITSHM=1"],
 				ExposedPorts: { "4000":{}, "8000":{}, "10001":{},"9090":{} },
-				Volumes: { "/tmp/.X11-unix": {} },
+				Volumes: { "/tmp/.X11-unix": {},"/home/tyohannes/cloned_dire/private_ws/scripts/robot.sh":{} },
 				HostConfig: { 
+					//TODO this must also get into the dataset. 
 					"PortBindings": {
 						"4000" : [{ "HostPort":"4000"}], 
 						"8000" : [{ "HostPort":"8000"}], 
 						"10001" : [{ "HostPort": "10001"}],
 						"9090" : [{ "HostPort": "9090"}]
 					},
-					"Binds": [ "/tmp/.X11-unix:/tmp/.X11-unix:rw" ],
+					"Binds": [ "/tmp/.X11-unix:/tmp/.X11-unix:rw","/home/tyohannes/cloned_dire/private_ws/scripts/robot.sh:/home/hanson_dev/hansonrobotics/private_ws/scripts/robot.sh" ],
 					"Privileged": true,
 					//			"Devices": ["/dev/snd","/dev/snd"]
 				},
 				Tty: true, 
-				Cmd: ["/bin/bash","-c","hr run sophia_body --dev"],
+				Cmd: ["/bin/bash","-c","hr run sophia_body"],
 				OpenStdin: false,
 				StdinOnce: false,
 				name: req.body.instance_name

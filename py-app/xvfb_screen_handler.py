@@ -5,11 +5,12 @@ import zerorpc
 class ScreenCreator: 
     def __init__(self): 
         self.displays = {} # Make this dictionary. Yes, that makes much more sense.
-        self.width = 1280
-        self.height = 740
+        self.width = 1600
+        self.height = 1200
+        self.colordepth = 16
 
     def create_display(self,instance_name): 
-        vdisplay = Xvfb(self.width,self.height)
+        vdisplay = Xvfb(self.width,self.height,self.colordepth)
         vdisplay.start()
         self.displays[instance_name] = vdisplay
         return vdisplay.new_display
