@@ -12,6 +12,7 @@ class Misc:
         self.colordepth = 24
         self.ports = {}
         self.process = {}
+        self.stream = 'hls' # or rtsp
 
     def create_display(self,instance_name,num_ports): 
         vdisplay = Xvfb(self.width,self.height,self.colordepth)
@@ -49,12 +50,18 @@ class Misc:
         display_record = ':' + str(self.displays[instance_name].new_display)
         # Command to change to process command. 
         # ffmpeg -f alsa -i default -f x11grab -s 1366x768 -r 30 -i :0.0 -sameq filename.avi
-        self.process[instance_name] = subprocess.Popen(['/home/tyohannes/Downloads/ffmpeg-3.3.2-64bit-static/ffmpeg','-f','x11grab','-s','1360x768','-probesize','10M','-i',display_record,'-c:v','h264','-preset','ultrafast','-pix_fmt','yuv420p','-crf','0','-f','rtsp','rtsp://127.0.0.1:8099/live/'+str(instance_name)])
+        if self.stream == 'rtsp': 
+            print('rtsp streaming setup')
+            self.process[instance_name] = subprocess.Popen(['/home/tyohannes/Downloads/ffmpeg-3.3.2-64bit-static/ffmpeg','-f','x11grab','-s','1360x768','-probesize','10M','-i',display_record,'-c:v','h264','-preset','ultrafast','-pix_fmt','yuv420p','-crf','0','-f','rtsp','-rtsp_transport','tcp','rtsp://127.0.0.1:8099/live/'+str(instance_name)])
+        elif self.stream == 'hls':
+            print('hls to file setup')
+            self.process[instance_name] = subprocess.Popen(['/home/tyohannes/Downloads/ffmpeg-3.3.2-64bit-static/ffmpeg','-f','x11grab','-s','1360x768','-probesize','10M','-i',display_record,'-c:v','h264','-preset','ultrafast','-pix_fmt','yuv420p','-crf','0','-f','hls','/home/tyohannes/Downloads/ffmpeg-3.3.2-64bit-static/stream/'+str(instance_name)+'.m3u8'])
+        elif self.stream == 'hls_http':
+            print('hls streaming setup using ngix')
+            self.process[instance_name] = subprocess.Popen(['/home/tyohannes/Downloads/ffmpeg-3.3.2-64bit-static/ffmpeg','-f','x11grab','-s','1360x768','-probesize','10M','-i',display_record,'-c:v','h264','-preset','ultrafast','-pix_fmt','yuv420p','-crf','0','-f','hls','-method','PUT','http://127.0.0.1:8090/live/'+str(instance_name)+'.m3u8'])
         return True
 
 
-# Okay, what is the logic function here: 
-# Create a display and save data to pickle, then when it get's called, depending on the task. 
 s = zerorpc.Server(Misc())
 s.bind("tcp://0.0.0.0:3111")
 s.run()

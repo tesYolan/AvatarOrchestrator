@@ -15,8 +15,11 @@ mongoose.Promise = global.Promise;
 mongoose.connect(url); 
 var db = mongoose.connection; 
 db.on('error', console.error.bind(console,'connection error:')); 
+//TODO to serve the streams to the different users. 
+//won't be used when the ngix server is being not used. 
 app.use(bodyParser.json()); 
 app.use(cors()); 
+app.use('/stream',express.static(__dirname+'/stream')); 
 app.use(instanceRouter); 
 app.use(configurationRouter); 
 app.set('appName', 'rest_for_head'); 
