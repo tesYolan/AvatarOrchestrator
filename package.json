@@ -26,6 +26,7 @@
     "zerorpc": "^0.9.7"
   },
   "devDependencies": {
-    "browser-sync": "^2.18.12"
+    "browser-sync": "^2.18.12",
+    "standard": "^10.0.2"
   }
 }
