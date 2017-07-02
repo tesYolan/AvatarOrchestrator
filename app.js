@@ -22,6 +22,19 @@ app.use(cors());
 app.use('/stream',express.static(__dirname+'/stream')); 
 app.use(instanceRouter); 
 app.use(configurationRouter); 
+
+if (app.get('env') === 'development') {
+	app.use(function(err, req, res, next)
+	{
+		console.log(err.message); 
+		//TODO is this enough. 
+	}
+	); 
+}
+
+app.use(function(err, req, res, next) {
+	console.log("production " + err.message); 
+}); 
 app.set('appName', 'rest_for_head'); 
 app.set('port', process.env.PORT || 3011);
 
