@@ -26,8 +26,9 @@ app.use(configurationRouter);
 if (app.get('env') === 'development') {
 	app.use(function(err, req, res, next)
 	{
-		console.log(err.message); 
-		//TODO is this enough. 
+		console.log("get's to error"); 
+		console.log(err); 
+		//TODO is this enough. This isn't working. 
 	}
 	); 
 }
