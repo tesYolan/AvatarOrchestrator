@@ -23,10 +23,17 @@
     "morgan": "^1.8.1",
     "node-docker-api": "^1.1.12",
     "socket.io": "^2.0.3",
+    "standard": "^10.0.2",
     "zerorpc": "^0.9.7"
   },
   "devDependencies": {
     "browser-sync": "^2.18.12",
+    "eslint": "^4.1.1",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.6.1",
+    "eslint-plugin-node": "^5.1.0",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1",
     "standard": "^10.0.2"
   }
 }
