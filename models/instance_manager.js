@@ -81,7 +81,7 @@ module.exports.deleteAllInstances = function deleteAllInstances (req, res, next)
   console.log('Deleting All Instances')
 
   Instances.find({}, function deleteInstances (err, instances) {
-    if (err) next(err)
+    if (err) return next(err)
     for (var i = 0; i < instances.length; i++) {
       (function stopInstance () {
         var name = instances[i].name
@@ -106,7 +106,7 @@ module.exports.deleteAllInstances = function deleteAllInstances (req, res, next)
               console.log('deleted from database ' + name)
               console.log(j)
               if (j === length - 1) {
-                res_ = [{'Deleted': 'Everything'}]
+                var res_ = [{'Deleted': 'Everything'}]
                 res.json(res_)
               }
             })
@@ -144,8 +144,11 @@ module.exports.deleteSpecificInstance = function deleteSpecificInstance (req, re
         DisplayManager.stop_display(req.params.instanceId, function (error, display, more) {
           if (error) return next(err)
           console.log('Stopped Display')
+          Instances.remove({'name': req.params.instanceId}, function (err, resp) {
+            if (err) return next(err)
+            res.json(res)
+          })
         })
-        res.json(resp)
       })
     })
   })
@@ -181,7 +184,7 @@ module.exports.getInstanceDetail = function getInstanceDetail (req, res, next) {
 
 module.exports.updateInstances = function updateInstances (req, res, next) {
   Instances.find({}, function updateInstance (err, instances) {
-    if (err) next(err)
+    if (err) return next(err)
     for (var i = 0; i < instances.length; i++) {
       (function () {
         var name = instances[i].name
