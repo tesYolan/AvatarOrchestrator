@@ -133,7 +133,7 @@ module.exports.decrementInstance = function decrementInstance (req, res, next) {
 
 module.exports.deleteSpecificInstance = function deleteSpecificInstance (req, res, next) {
   console.log('Deleteing specific instance ' + String(req.params.instanceId))
-  Instances.findOne({'name': req.params.instanceId}, function deleteInstance (err, resp) {
+  Instances.findOne({'name': req.params.instanceId}, function deleteInstance (err, response) {
     if (err) return next(err)
 
     var container = docker.getContainer(req.params.instanceId)
@@ -146,7 +146,7 @@ module.exports.deleteSpecificInstance = function deleteSpecificInstance (req, re
           console.log('Stopped Display')
           Instances.remove({'name': req.params.instanceId}, function (err, resp) {
             if (err) return next(err)
-            res.json(res)
+            res.json(resp)
           })
         })
       })

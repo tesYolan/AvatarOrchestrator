@@ -8,6 +8,7 @@ var instanceRouter = require('./routes/routesInstance')
 var configurationRouter = require('./routes/routesConfiguration')
 var app = express()
 var server = require('http').createServer(app)
+var io = require('./models/socket_manager')
 
 var url = 'mongodb://localhost:27017/instances'
 mongoose.Promise = global.Promise
@@ -33,6 +34,8 @@ if (app.get('env') === 'development') {
 app.use(function (err, req, res, next) {
   console.log('production ' + err.message)
 })
+// Socket declaration
+io.listen(server)
 app.set('appName', 'rest_for_head')
 app.set('port', process.env.PORT || 3011)
 
