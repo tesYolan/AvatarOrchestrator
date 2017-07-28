@@ -3,12 +3,19 @@ var Instances = require('./instances')
 var DisplayManager = require('./display_manager')
 
 var docker = new Docker()
-// TODO to display_manager
-// TODO to database interaction
 // TODO session manager
 
+/**
+ * createInstance code to create instance. The creates creates and starts the instance. 
+ *
+ * @param req - expected format in the JSON "instance_name": "valid_docker_name", "vision_tool" : "cmt", "chatbot" : "opencog" . Besides giving the instance_name a vaild name for docker which is [ a-zA-Z0-9_ ]+, it is expected vision_tool values are pi_vision/cmt. chatbot valid values are opencog/AIML
+ * @param res - Response is going to be for valid system. ('Created Instance ' + id)
+ * For invalid system states, the response is yet to thought out. 
+ * @param next - Invalid states go this response. 
+ * @returns {undefined}
+ */
 module.exports.createInstance = function createInstance (req, res, next) {
-  DisplayManager.create_display(req.body.instance_name, 4, function createNewInstance (error, display, more) {
+  DisplayManager.createDisplay(req.body.instance_name, 4, function createNewInstance (error, display, more) {
     if (error) return next(String(error))
     console.log(display[0])
     docker.createContainer({
@@ -77,6 +84,14 @@ module.exports.createInstance = function createInstance (req, res, next) {
   })
 }
 
+/**
+ * deleteAllInstances
+ *
+ * @param req - not used. 
+ * @param res - gives out the deleted system.
+ * @param next - error is redirected here. 
+ * @returns {undefined}
+ */
 module.exports.deleteAllInstances = function deleteAllInstances (req, res, next) {
   console.log('Deleting All Instances')
 
@@ -98,7 +113,7 @@ module.exports.deleteAllInstances = function deleteAllInstances (req, res, next)
             console.log('deleted ' + name)
             Instances.remove(name, function removeInstanceFromDB (err, resp) {
               if (err) return next(err)
-              DisplayManager.stop_display(name, function removedDisplay (error, display, more) {
+              DisplayManager.stopDisplay(name, function removedDisplay (error, display, more) {
                 if (err) return next(error)
                 console.log('Stopped Display')
               })
@@ -117,6 +132,14 @@ module.exports.deleteAllInstances = function deleteAllInstances (req, res, next)
   })
 }
 
+/**
+ * incrementInstance - not used. 
+ * @deprecated Using mediasoup
+ * @param req
+ * @param res
+ * @param next
+ * @returns {undefined}
+ */
 module.exports.incrementInstance = function incrementInstance (req, res, next) {
   Instances.findOneAndUpdate({ 'name': req.params.instanceId },
     {$set: req.body}, { new: true }, function (err, instance) {
@@ -124,6 +147,14 @@ module.exports.incrementInstance = function incrementInstance (req, res, next) {
     })
 }
 
+/**
+ * decrementInstance
+ * @deprecated Using mediasoup. Delete the next system. 
+ * @param req
+ * @param res
+ * @param next
+ * @returns {undefined}
+ */
 module.exports.decrementInstance = function decrementInstance (req, res, next) {
   Instances.findOneAndUpdate({ 'name': req.params.instanceId },
     {$set: req.body}, { new: true }, function (err, instance) {
@@ -131,6 +162,14 @@ module.exports.decrementInstance = function decrementInstance (req, res, next) {
     })
 }
 
+/**
+ * deleteSpecificInstance
+ *
+ * @param req - req.params.instanceId represents the instance to delete. 
+ * @param res - the Mongo delete response. 
+ * @param next - Error holder
+ * @returns {undefined}
+ */
 module.exports.deleteSpecificInstance = function deleteSpecificInstance (req, res, next) {
   console.log('Deleteing specific instance ' + String(req.params.instanceId))
   Instances.findOne({'name': req.params.instanceId}, function deleteInstance (err, response) {
@@ -141,7 +180,7 @@ module.exports.deleteSpecificInstance = function deleteSpecificInstance (req, re
       if (err) return next(err)
       container.remove(function (err, data) {
         if (err) return next(err)
-        DisplayManager.stop_display(req.params.instanceId, function (error, display, more) {
+        DisplayManager.stopDisplay(req.params.instanceId, function (error, display, more) {
           if (error) return next(err)
           console.log('Stopped Display')
           Instances.remove({'name': req.params.instanceId}, function (err, resp) {
@@ -154,6 +193,15 @@ module.exports.deleteSpecificInstance = function deleteSpecificInstance (req, re
   })
 }
 
+/**
+ * updateInstance 
+ * Indicator for whether the instance is started or stopped. It toggles the state.
+ *
+ * @param req - req.params.instanceId holds instance to stopped. 
+ * @param res - return the instance that has been stopped/started.
+ * @param next - Error
+ * @returns {undefined}
+ */
 module.exports.updateInstance = function updateInstance (req, res, next) {
   Instances.findOneAndUpdate({'name': req.params.instanceId},
     {$set: req.body}, { new: true }, function startorstopInstance (err, instance) {
@@ -175,6 +223,14 @@ module.exports.updateInstance = function updateInstance (req, res, next) {
     })
 }
 
+/**
+ * getInstanceDetail
+ *
+ * @param req - req.params.instanceId the instance to get the detail. 
+ * @param res - response is the instance stored in mongodb. 
+ * @param next - Error if the instance not found in db.
+ * @returns {undefined}
+ */
 module.exports.getInstanceDetail = function getInstanceDetail (req, res, next) {
   Instances.findOne({ 'name': req.params.instanceId }, function (err, instance) {
     if (err) return next(err)
@@ -182,6 +238,14 @@ module.exports.getInstanceDetail = function getInstanceDetail (req, res, next) {
   })
 }
 
+/**
+ * updateInstances - Same as updateInstance but for all the instances. 
+ *
+ * @param req - not used
+ * @param res - All the instances. 
+ * @param next - Error
+ * @returns {undefined}
+ */
 module.exports.updateInstances = function updateInstances (req, res, next) {
   Instances.find({}, function updateInstance (err, instances) {
     if (err) return next(err)
@@ -200,6 +264,14 @@ module.exports.updateInstances = function updateInstances (req, res, next) {
   })
 }
 
+/**
+ * getInstances
+ *
+ * @param req - not used
+ * @param res - all the instances in db. Note this may not be consistent with the docker
+ * @param next - error if there is mistake in the db. 
+ * @returns {undefined}
+ */
 module.exports.getInstances = function getInstances (req, res, next) {
   Instances.find({}, function (err, instances) {
     if (err) return next(err)
