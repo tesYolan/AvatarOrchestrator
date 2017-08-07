@@ -34,6 +34,7 @@ module.exports.createInstance = function createInstance (req, res, next) {
           '10001': [{ 'HostPort': String(display[1][2]) }],
           '9090': [{ 'HostPort': String(display[1][3]) }]
         },
+        // TODO Refactor this out. 
         'Binds': [ '/tmp/.X11-unix:/tmp/.X11-unix:rw', '/home/tyohannes/cloned_dire/private_ws/scripts/robot.sh:/home/hanson_dev/hansonrobotics/private_ws/scripts/robot.sh' ],
         'Privileged': true
         // "Devices": ["/dev/snd","/dev/snd"]
