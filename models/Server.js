@@ -127,7 +127,7 @@ class Server extends EventEmitter {
         }, 10000)
 
         this.rooms.set(roomId, room)
-        this.io.emit('new-connection', room)
+        this.emit('new-connection', room)
         room.on('close', () => {
           this.rooms.delete(roomId)
           clearInterval(logStatusTimer)
