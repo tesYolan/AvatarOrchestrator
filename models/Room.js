@@ -199,6 +199,9 @@ class Room extends EventEmitter {
       })
     // Create a RTCPeerConnection instance and set media capabilities.
       .then((data) => {
+        mediaPeer.on('newrtpreceiver', (rtpReceiver) => {
+          this.emit('new-stream', rtpReceiver)
+        })
         peerconnection = new webrtc.RTCPeerConnection(
           {
             peer: mediaPeer,
@@ -388,6 +391,9 @@ class Room extends EventEmitter {
         return peerconnection.setRemoteDescription(answer)
       })
       .then(() => {
+        // May add send ready. 
+        this.send('ready')
+        this.emit('ready', peerconnection)
         let oldMsids = protooPeer.data.msids
 
         // Reset peer's msids.
@@ -467,6 +473,10 @@ class Room extends EventEmitter {
 
     this._maxBitrate = newMaxBitrate
   }
+  send (type, data) {
+    this.emit('send', type, data)
+    // this.socket.emit(type, data)
+  };
 }
 
 module.exports = Room
