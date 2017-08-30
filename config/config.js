@@ -34,8 +34,12 @@ module.exports = {
       },
       {
         kind: 'video',
-        name: 'video/vp8',
-        clockRate: 90000
+        name: 'video/h264',
+        clockRate: 90000,
+        payloadType: 123,
+        parameters: {
+          packetizationMode: 1
+        }
       }
     ],
     peerTransport: {
