@@ -2,6 +2,7 @@ var path = require('path')
 var url_ = require('url')
 var bodyParser = require('body-parser')
 var https = require('https')
+var http = require('http')
 var cors = require('cors')
 var instanceRouter = require('../routes/routesInstance')
 var configurationRouter = require('../routes/routesConfiguration')
@@ -31,7 +32,6 @@ class Server extends EventEmitter {
 
   listen (options) {
     this.options = options
-    this.mediaServer = mediasoup.Server(options)
     this.mediaServer = mediasoup.Server({
       numWorkers: 1,
       logLevel: config.mediasoup.logLevel,
@@ -63,6 +63,7 @@ class Server extends EventEmitter {
 
   startWebServer () {
     const app = express()
+
     this.tls = {
       cert: fs.readFileSync(config.tls.cert),
       key: fs.readFileSync(config.tls.key)
@@ -85,19 +86,20 @@ class Server extends EventEmitter {
     app.use(function (err, req, res, next) {
       console.log('production ' + err.message)
     })
-    // Socket declaration
     app.set('appName', 'rest_for_head')
-    app.set('port', process.env.PORT || 3011)
+    app.set('port', process.env.PORT || 3443)
+    console.log('port is : ' + process.env.PORT + ' ' + config.protoo.listenPort)
 
     // server.listen(app.get('port'), function () 
-    this.server = https.createServer(this.tls, (req, res) => {
-      res.writeHead(404, 'Not Here')
-      res.end()
+    this.server_ = http.createServer(app)
+    this.server = https.createServer(this.tls, app => {
+      // TODO message for not here.
     })
     // TODO where should this funciton be.
     this.server.listen(config.protoo.listenPort, config.protoo.listenIp, function () {
       console.log('Express server is listening on port ' + config.protoo.listenPort)
     })
+    this.server_.listen(3011)
   }
 
   startSocketServer () {
@@ -147,18 +149,3 @@ class Server extends EventEmitter {
 }
 
 module.exports = Server
-
-// var io = socketIO(mediaServer)
-// const RtspServer = require('mediasoup-server').RtspServer
-// const rtspServer = new RtspServer(mediaServer)
-// rtspServer
-//  .listen(5000)
-//  .on('listen', (port) => {
-//    console.log(`RTSP server started rtsp://192.168.1.48:${port}`)
-//  })
-//  .on('new-source', (source) => {
-//    let rtspUrl = `rtsp://192.168.1.48:${rtspServer.port}/${source.id}.sdp`
-//    source.on('enabled', () => {
-//      console.log(`RTSP source available: ${rtspUrl}`)
-//    })
-//  })
