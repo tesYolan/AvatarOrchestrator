@@ -6,8 +6,15 @@ module.exports = {
     key: `${__dirname}/mediasoup-demo.localhost.key.pem`
   },
   protoo: {
-    listenIp: '0.0.0.0',
+    listenIp: '192.168.1.48',
     listenPort: 3443
+  },
+  http: {
+    listenPort: 3011
+  },
+  rtspServer: {
+    listenIp: '192.168.1.48',
+    listenPort: 5000
   },
   mediasoup: {
     logLevel: 'debug',

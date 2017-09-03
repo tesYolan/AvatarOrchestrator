@@ -87,8 +87,6 @@ class Server extends EventEmitter {
       console.log('production ' + err.message)
     })
     app.set('appName', 'rest_for_head')
-    app.set('port', process.env.PORT || 3443)
-    console.log('port is : ' + process.env.PORT + ' ' + config.protoo.listenPort)
 
     // server.listen(app.get('port'), function () 
     this.server_ = http.createServer(app)
@@ -99,7 +97,9 @@ class Server extends EventEmitter {
     this.server.listen(config.protoo.listenPort, config.protoo.listenIp, function () {
       console.log('Express server is listening on port ' + config.protoo.listenPort)
     })
-    this.server_.listen(3011)
+    // TODO http requests.
+    this.server_.listen(config.http.listenPort)
+    console.log('listening http on port: ' + config.http.listenPort)
   }
 
   startSocketServer () {

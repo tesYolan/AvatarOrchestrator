@@ -3,6 +3,7 @@ import pickle
 import zerorpc
 import socket
 import subprocess
+import os
 
 class Misc: 
     def __init__(self): 
@@ -12,7 +13,21 @@ class Misc:
         self.colordepth = 24
         self.ports = {}
         self.process = {}
-        self.stream = 'hls' # or rtsp
+        self.stream = 'rtmp' # hls or rtsp or rtmp or hls_http
+        self.resolution = '1360x768'
+        self.FFMPEG = os.environ['FFMPEG']
+        #self.FFMPEG = 'ffmpeg'
+        self.STREAM = '../stream/'
+
+        self.RTMP_IP = 'localhost'
+        self.RTSP_IP = 'localhost'
+        self.HTTP_IP = 'localhost'
+        self.HTTPS_IP = 'localhost'
+
+        self.RTMP_PORT = '5442'
+        self.RTSP_PORT = '8099'
+        self.HTTP_PORT = '8090'
+        self.HTTPS_PORT = '5443'
 
     def create_display(self,instance_name,num_ports): 
         vdisplay = Xvfb(self.width,self.height,self.colordepth)
@@ -52,15 +67,18 @@ class Misc:
         # ffmpeg -f alsa -i default -f x11grab -s 1366x768 -r 30 -i :0.0 -sameq filename.avi
         if self.stream == 'rtsp': 
             print('rtsp streaming setup')
-            self.process[instance_name] = subprocess.Popen(['/home/tyohannes/Downloads/ffmpeg-3.3.2-64bit-static/ffmpeg','-f','x11grab','-s','1360x768','-probesize','10M','-i',display_record,'-c:v','h264','-preset','ultrafast','-pix_fmt','yuv420p','-crf','0','-f','rtsp','-rtsp_transport','tcp','rtsp://127.0.0.1:8099/live/'+str(instance_name)])
+            self.process[instance_name] = subprocess.Popen([self.FFMPEG,'-f','x11grab','-s',self.resolution,'-probesize','10M','-i',display_record,'-c:v','h264','-preset','ultrafast','-pix_fmt','yuv420p','-crf','0','-f','rtsp','-rtsp_transport','tcp','rtsp://' + self.RTSP_IP + ':' + self.RTSP_PORT + '/live/'+str(instance_name)])
         elif self.stream == 'hls':
             print('hls to file setup')
-            self.process[instance_name] = subprocess.Popen(['/home/tyohannes/Downloads/ffmpeg-3.3.2-64bit-static/ffmpeg','-f','x11grab','-s','1360x768','-probesize','10M','-i',display_record,'-c:v','h264','-preset','ultrafast','-pix_fmt','yuv420p','-crf','0','-f','hls','/home/tyohannes/Downloads/ffmpeg-3.3.2-64bit-static/stream/'+str(instance_name)+'.m3u8'])
+            self.process[instance_name] = subprocess.Popen([self.FFMPEG,'-f','x11grab','-s',self.resolution,'-probesize','10M','-i',display_record,'-c:v','h264','-preset','ultrafast','-pix_fmt','yuv420p','-crf','0','-f','hls',self.STREAM+str(instance_name)+'.m3u8'])
         elif self.stream == 'hls_http':
             print('hls streaming setup using ngix')
-            self.process[instance_name] = subprocess.Popen(['/home/tyohannes/Downloads/ffmpeg-3.3.2-64bit-static/ffmpeg','-f','x11grab','-s','1360x768','-probesize','10M','-i',display_record,'-c:v','h264','-preset','ultrafast','-pix_fmt','yuv420p','-crf','0','-f','hls','-method','PUT','http://127.0.0.1:8090/live/'+str(instance_name)+'.m3u8'])
+            self.process[instance_name] = subprocess.Popen([self.FFMPEG,'-f','x11grab','-s',self.resolution,'-probesize','10M','-i',display_record,'-c:v','h264','-preset','ultrafast','-pix_fmt','yuv420p','-crf','0','-f','hls','-method','PUT','https://' + self.HTTPS_IP + ':' + self.HTTPS_PORT + '/live/'+str(instance_name)+'.m3u8'])
+        elif self.stream == 'rtmp':
+            print('rtmp streaming setup')
+            self.process[instance_name] = subprocess.Popen([self.FFMPEG,'-f','x11grab','-s',self.resolution,'-probesize','10M','-i',display_record,'-c:v','h264','-c:a','aac','-preset','ultrafast','-pix_fmt','yuv420p','-crf','0','-f','flv','rtmp://' + self.RTMP_IP + ':' + self.RTMP_PORT + '/live/'+str(instance_name)])
+            
         return True
-
 
 s = zerorpc.Server(Misc())
 s.bind("tcp://0.0.0.0:3111")
