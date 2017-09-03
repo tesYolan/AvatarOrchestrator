@@ -1,0 +1,14 @@
+# nginx configuration
+https://gist.github.com/tesYolan/6ad576b8d3a56eb1cbe5a46005238ed9
+
+Besure to create the respective folders detailed in the rtmp section.
+
+# How to run
+
+    npm install
+    npm start
+
+# TODO 
+Detailed documentation to follow, in the meantime jsdoc enabled doc can be built by invoking
+    grunt jsdoc
+
