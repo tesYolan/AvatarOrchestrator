@@ -1,11 +1,12 @@
 var mongoose = require('mongoose')
+var config = require('./config/config')
 
-var url = 'mongodb://localhost:27017/instances'
+var url = 'mongodb://'+config.mongodb_ip+':'+config.mongodb_port+'/instances'
 var Server = require('./models/Server')
 var config = require('./config/config')
 process.title = 'rest_for_head'
 mongoose.Promise = global.Promise
-mongoose.connect(url)
+mongoose.connect(url,{ useMongoClient: true })
 var db = mongoose.connection
 db.on('error', console.error.bind(console, 'connection error:'))
 // TODO to serve the streams to the different users.

@@ -5,6 +5,9 @@ module.exports = {
     cert: `${__dirname}/mediasoup-demo.localhost.cert.pem`,
     key: `${__dirname}/mediasoup-demo.localhost.key.pem`
   },
+  mongodb_ip: 'localhost',
+  mongodb_port: '27017',
+  docker_image: 'hanson:fresh',
   protoo: {
     listenIp: '192.168.1.48',
     listenPort: 3443

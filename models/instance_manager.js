@@ -1,6 +1,7 @@
 var Docker = require('dockerode')
 var Instances = require('./instances')
 var DisplayManager = require('./display_manager')
+var config = require('../config/config')
 
 var docker = new Docker()
 // TODO session manager
@@ -19,7 +20,7 @@ module.exports.createInstance = function createInstance (req, res, next) {
     if (error) return next(String(error))
     console.log(display[0])
     docker.createContainer({
-      Image: 'hanson:work',
+      Image: config.docker_image,
       AttachStdin: false,
       AttachStdout: true,
       AttachStderr: true,
