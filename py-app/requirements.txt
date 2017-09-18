@@ -1,0 +1,2 @@
+xvfbwrapper==0.2.9
+zerorpc==0.6.1
