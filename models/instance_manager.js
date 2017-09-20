@@ -107,7 +107,7 @@ module.exports.deleteAllInstances = function deleteAllInstances (req, res, next)
         console.log('name to stop and delete ' + name)
         var container = docker.getContainer(instances[i].name)
         container.stop(function deleteInstance (err, data) {
-          if (err) return next(err)
+          if (err) console.log('Container is stopped, Proceeding to delete') // return next(err)
           console.log('stopped ' + name)
 
           container.remove(function removedInstance (err, data) {
@@ -179,7 +179,7 @@ module.exports.deleteSpecificInstance = function deleteSpecificInstance (req, re
 
     var container = docker.getContainer(req.params.instanceId)
     container.stop(function (err, data) {
-      if (err) return next(err)
+      if (err) console.log('Container is stopped already, Proceeding to next') // return next(err)
       container.remove(function (err, data) {
         if (err) return next(err)
         DisplayManager.stopDisplay(req.params.instanceId, function (error, display, more) {
@@ -212,7 +212,7 @@ module.exports.updateInstance = function updateInstance (req, res, next) {
       if (req.body.started === 'false') {
         container.stop(function (err, data) {
           console.log('Stopping Container ' + String(req.params.instanceId))
-          if (err) return next(err)
+          if (err) console.log('container is stopped already, Proceeding to next') // return next(err)
           res.json(instance)
         })
       } else {
