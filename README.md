@@ -7,7 +7,7 @@ It's assumed there is a valid mongodb deamon running on the platform.
 3. Set the mongodb configuration in the configuration file to the mongodb location. [configuration file](https://github.com/tesYolan/Restforhead/blob/master/config/config.js#L8)
 
 ## FFMPEG
-Since we do screen casting it's necessary the `FFMPEG` environmental variable points to a valid ffmpeg executable. For instance one can actually do the following to setup static build to be used. Note, as long as the ``FFMPEG`` variable points to a valid ffmpeg location, you don't need to setup using the following way.
+Since we do screen casting it's necessary the `FFMPEG` environmental variable points to a valid ffmpeg executable. For instance one can actually do the following to setup static build to be used. Note, as long as the ``FFMPEG`` is set to ffmpeg executable or ffmpeg is path , you don't need to setup using the following way.
 ```
 cd ~/
 wget https://johnvansickle.com/ffmpeg/builds/ffmpeg-git-64bit-static.tar.xz
