@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js"
+    "start-server": "nodemon app.js",
+    "run-display": "python py-app/misc.py",
+    "deploy": "concurrently --kill-others \"npm run start-server\" \"npm run run-display\""
   },
   "keywords": [
     "HEAD"
@@ -32,6 +34,7 @@
   },
   "devDependencies": {
     "browser-sync": "^2.18.12",
+    "concurrently": "^3.5.0",
     "eslint": "~4.1.1",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.7.0",

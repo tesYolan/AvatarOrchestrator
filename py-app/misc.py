@@ -4,6 +4,7 @@ import zerorpc
 import socket
 import subprocess
 import os
+import distutils.spawn
 
 class Misc: 
     def __init__(self): 
@@ -15,9 +16,15 @@ class Misc:
         self.process = {}
         self.stream = 'rtmp' # hls or rtsp or rtmp or hls_http
         self.resolution = '1360x768'
-        self.FFMPEG = os.environ['FFMPEG']
+        try:
+            self.FFMPEG = os.environ['FFMPEG']
+        except KeyError:
+            if distutils.spawn.find_executable('ffmpeg'):
+                self.FFMPEG = 'ffmpeg'
+            else:
+                raise Exception('FFMPEG executable not found')
         #self.FFMPEG = 'ffmpeg'
-        self.STREAM = '../stream/'
+        self.STREAM_LOC = '../stream/'
 
         self.RTMP_IP = 'localhost'
         self.RTSP_IP = 'localhost'
@@ -70,7 +77,7 @@ class Misc:
             self.process[instance_name] = subprocess.Popen([self.FFMPEG,'-f','x11grab','-s',self.resolution,'-probesize','10M','-i',display_record,'-c:v','h264','-preset','ultrafast','-pix_fmt','yuv420p','-crf','0','-f','rtsp','-rtsp_transport','tcp','rtsp://' + self.RTSP_IP + ':' + self.RTSP_PORT + '/live/'+str(instance_name)])
         elif self.stream == 'hls':
             print('hls to file setup')
-            self.process[instance_name] = subprocess.Popen([self.FFMPEG,'-f','x11grab','-s',self.resolution,'-probesize','10M','-i',display_record,'-c:v','h264','-preset','ultrafast','-pix_fmt','yuv420p','-crf','0','-f','hls',self.STREAM+str(instance_name)+'.m3u8'])
+            self.process[instance_name] = subprocess.Popen([self.FFMPEG,'-f','x11grab','-s',self.resolution,'-probesize','10M','-i',display_record,'-c:v','h264','-preset','ultrafast','-pix_fmt','yuv420p','-crf','0','-f','hls',self.STREAM_LOC+str(instance_name)+'.m3u8'])
         elif self.stream == 'hls_http':
             print('hls streaming setup using ngix')
             self.process[instance_name] = subprocess.Popen([self.FFMPEG,'-f','x11grab','-s',self.resolution,'-probesize','10M','-i',display_record,'-c:v','h264','-preset','ultrafast','-pix_fmt','yuv420p','-crf','0','-f','hls','-method','PUT','https://' + self.HTTPS_IP + ':' + self.HTTPS_PORT + '/live/'+str(instance_name)+'.m3u8'])

@@ -9,14 +9,14 @@ module.exports = {
   mongodb_port: '27017',
   docker_image: 'hanson:fresh',
   protoo: {
-    listenIp: '192.168.1.48',
+    listenIp: '192.168.1.38',
     listenPort: 3443
   },
   http: {
     listenPort: 3011
   },
   rtspServer: {
-    listenIp: '192.168.1.48',
+    listenIp: '192.168.1.38',
     listenPort: 5000
   },
   mediasoup: {
