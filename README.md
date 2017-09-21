@@ -18,10 +18,54 @@ echo "export FFMPEG=$pwd/ffmpeg" | tee -a ~/.bashrc
 ```
 
 
-# nginx configuration
+## Nginx Installation
+```
+cd ~/
+# first clone rtmp module
+git clone https://github.com/arut/nginx-rtmp-module.git
+wget http://nginx.org/download/nginx-1.12.1.tar.gz
+tar -xf nginx-1.12.1.tar.gz
+cd nginx-1.12.1/ 
+# Note both ssl module and stub status are enabled.
+./configure --add-module=../nginx-rtmp-module --with-http_ssl_module --with-http_stub_status_module
+make -j`nproc`
+sudo make install
+# add entry to service for the system save to /lib/systemd/system/nginx.service
+[Unit]
+Description=The NGINX HTTP and reverse proxy server
+After=syslog.target network.target remote-fs.target nss-lookup.target
+
+[Service]
+Type=forking
+# for fedora systems
+# PIDFile=/run/nginx.pid
+# for ubunut
+PIDFile=/var/run/nginx.pid
+ExecStartPre=/usr/sbin/nginx -t
+ExecStart=/usr/sbin/nginx
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s QUIT $MAINPID
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+```
+There may be issue installing this, there needs to be resolution of this going forward. 
+
+### nginx configuration
+After having installed the nginx with rtmp module, one can configure the desired parameters as follows. Note: This has to be reflected in the config file in this module. 
 https://gist.github.com/tesYolan/6ad576b8d3a56eb1cbe5a46005238ed9
 
-Besure to create the respective folders detailed in the rtmp section.
+### Start the service
+```
+sudo service nginx start
+```
+
+* Besure to create the respective folders detailed in the rtmp section.
+* If errors come up when starting the service diagnose with:
+```
+systemctl status nginx.service 
+```
 
 # Configuration
 ## IP configuration
