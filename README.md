@@ -32,6 +32,7 @@ make -j`nproc`
 sudo make install
 ```
 Add entry to service for the system save to /lib/systemd/system/nginx.service
+```
 [Unit]
 Description=The NGINX HTTP and reverse proxy server
 After=syslog.target network.target remote-fs.target nss-lookup.target
