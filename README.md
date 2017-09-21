@@ -30,7 +30,8 @@ cd nginx-1.12.1/
 ./configure --add-module=../nginx-rtmp-module --with-http_ssl_module --with-http_stub_status_module
 make -j`nproc`
 sudo make install
-# add entry to service for the system save to /lib/systemd/system/nginx.service
+```
+Add entry to service for the system save to /lib/systemd/system/nginx.service
 [Unit]
 Description=The NGINX HTTP and reverse proxy server
 After=syslog.target network.target remote-fs.target nss-lookup.target
