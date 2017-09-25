@@ -5,6 +5,7 @@ const protooServer = require('protoo-server')
 const webrtc = require('mediasoup').webrtc
 // const console = require('./console')('Room');
 const config = require('../config/config')
+const logger = require('./Logger')
 
 const MAX_BITRATE = config.mediasoup.maxBitrate || 3000000
 const MIN_BITRATE = Math.min(50000 || MAX_BITRATE)
@@ -13,7 +14,7 @@ const MIN_AUDIO_LEVEL = -50
 
 class Room extends EventEmitter {
   constructor (roomId, mediaServer) {
-    console.log('constructor() [roomId:"%s"]', roomId)
+    logger.log('constructor() [roomId:"%s"]', roomId)
 
     super()
     this.setMaxListeners(Infinity)
@@ -38,7 +39,7 @@ class Room extends EventEmitter {
         mediaCodecs: config.mediasoup.roomCodecs
       })
       .then((room) => {
-        console.log('mediasoup room created')
+        logger.log('mediasoup room created')
 
         this._mediaRoom = room
 
@@ -53,10 +54,10 @@ class Room extends EventEmitter {
 
           // TODO: FIX
           this._mediaRoom.on('____audiolevels', (entries) => {
-            console.log('room "audiolevels" event')
+            logger.log('room "audiolevels" event')
 
             for (let entry of entries) {
-              console.debug('- [peer name:%s, rtpReceiver.id:%s, audio level:%s]',
+              logger.debug('- [peer name:%s, rtpReceiver.id:%s, audio level:%s]',
                 entry.peer.name, entry.rtpReceiver.id, entry.audioLevel)
             }
 
@@ -79,13 +80,13 @@ class Room extends EventEmitter {
               let data = {}
 
               if (activeSpeaker) {
-                console.log('active speaker [peer:"%s", volume:%s]',
+                logger.log('active speaker [peer:"%s", volume:%s]',
                   activeSpeaker.name, activeLevel)
 
                 data.peer = { id: activeSpeaker.name }
                 data.level = activeLevel
               } else {
-                console.log('no current speaker')
+                logger.log('no current speaker')
 
                 data.peer = null
               }
@@ -109,7 +110,7 @@ class Room extends EventEmitter {
   }
 
   close () {
-    console.log('close()')
+    logger.log('close()')
 
     // Close the protoo Room.
     this._protooRoom.close()
@@ -124,7 +125,7 @@ class Room extends EventEmitter {
   logStatus () {
     if (!this._mediaRoom) { return }
 
-    console.log(
+    logger.log(
       'logStatus() [room id:"%s", protoo peers:%s, mediasoup peers:%s]',
       this._roomId,
       this._protooRoom.peers.length,
@@ -132,10 +133,10 @@ class Room extends EventEmitter {
   }
 
   createProtooPeer (peerId, transport) {
-    console.log('createProtooPeer() [peerId:"%s"]', peerId)
+    logger.log('createProtooPeer() [peerId:"%s"]', peerId)
 
     if (this._protooRoom.hasPeer(peerId)) {
-      console.warn('createProtooPeer() | there is already a peer with same peerId, closing the previous one [peerId:"%s"]', peerId)
+      logger.warn('createProtooPeer() | there is already a peer with same peerId, closing the previous one [peerId:"%s"]', peerId)
 
       let protooPeer = this._protooRoom.getPeer(peerId)
 
@@ -149,7 +150,7 @@ class Room extends EventEmitter {
   }
 
   _handleProtooPeer (protooPeer) {
-    console.log('_handleProtooPeer() [peerId:"%s"]', protooPeer.id)
+    logger.log('_handleProtooPeer() [peerId:"%s"]', protooPeer.id)
 
     let mediaPeer = this._mediaRoom.Peer(protooPeer.id)
     let peerconnection
@@ -157,7 +158,7 @@ class Room extends EventEmitter {
     protooPeer.data.msids = []
 
     protooPeer.on('close', () => {
-      console.log('protoo Peer "close" event [peerId:"%s"]', protooPeer.id)
+      logger.log('protoo Peer "close" event [peerId:"%s"]', protooPeer.id)
 
       this._protooRoom.spread(
         'removepeer',
@@ -178,7 +179,7 @@ class Room extends EventEmitter {
         if (this._mediaRoom && this._mediaRoom.closed) { return }
 
         if (this._protooRoom.peers.length === 0) {
-          console.log(
+          logger.log(
             'last peer in the room left, closing the room [roomId:"%s"]',
             this._roomId)
 
@@ -215,7 +216,7 @@ class Room extends EventEmitter {
 
         mediaPeer.on('newtransport', (transport) => {
           transport.on('iceselectedtuplechange', (data) => {
-            console.log('"iceselectedtuplechange" event [peerId:"%s", protocol:%s, remoteIP:%s, remotePort:%s]',
+            logger.log('"iceselectedtuplechange" event [peerId:"%s", protocol:%s, remoteIP:%s, remotePort:%s]',
               protooPeer.id, data.protocol, data.remoteIP, data.remotePort)
           })
         })
@@ -265,20 +266,20 @@ class Room extends EventEmitter {
       .then(() => {
         // Handle PeerConnection events.
         peerconnection.on('negotiationneeded', () => {
-          console.log('"negotiationneeded" event [peerId:"%s"]', protooPeer.id)
+          logger.log('"negotiationneeded" event [peerId:"%s"]', protooPeer.id)
 
           // Send SDP re-offer.
           this._sendOffer(protooPeer)
         })
 
         peerconnection.on('signalingstatechange', () => {
-          console.log('"signalingstatechange" event [peerId:"%s", signalingState:%s]',
+          logger.log('"signalingstatechange" event [peerId:"%s", signalingState:%s]',
             protooPeer.id, peerconnection.signalingState)
         })
       })
       .then(() => {
         protooPeer.on('request', (request, accept, reject) => {
-          console.log('protoo Peer "request" event [method:%s]', request.method)
+          logger.log('protoo Peer "request" event [method:%s]', request.method)
 
           switch (request.method) {
             case 'reofferme':
@@ -296,8 +297,8 @@ class Room extends EventEmitter {
                   accept()
                 })
                 .catch((error) => {
-                  console.error('"restartice" request failed: %s', error)
-                  console.error('stack:\n' + error.stack)
+                  logger.error('"restartice" request failed: %s', error)
+                  logger.error('stack:\n' + error.stack)
 
                   reject(500, `"restartice" failed: ${error.message}`)
                 })
@@ -328,14 +329,14 @@ class Room extends EventEmitter {
                     if (disable) { return videoRtpSender.disable({ emit: false }) } else { return videoRtpSender.enable({ emit: false }) }
                   })
                   .then(() => {
-                    console.log('"disableremotevideo" request succeed [disable:%s]',
+                    logger.log('"disableremotevideo" request succeed [disable:%s]',
                       !!disable)
 
                     accept()
                   })
                   .catch((error) => {
-                    console.error('"disableremotevideo" request failed: %s', error)
-                    console.error('stack:\n' + error.stack)
+                    logger.error('"disableremotevideo" request failed: %s', error)
+                    logger.error('stack:\n' + error.stack)
 
                     reject(500, `"disableremotevideo" failed: ${error.message}`)
                   })
@@ -348,7 +349,7 @@ class Room extends EventEmitter {
 
             default:
             {
-              console.error('unknown method')
+              logger.error('unknown method')
 
               reject(404, 'unknown method')
             }
@@ -356,15 +357,15 @@ class Room extends EventEmitter {
         })
       })
       .catch((error) => {
-        console.error('_handleProtooPeer() failed: %s', error.message)
-        console.error('stack:\n' + error.stack)
+        logger.error('_handleProtooPeer() failed: %s', error.message)
+        logger.error('stack:\n' + error.stack)
 
         protooPeer.close()
       })
   }
 
   _sendOffer (protooPeer, options) {
-    console.log('_sendOffer() [peerId:"%s"]', protooPeer.id)
+    logger.log('_sendOffer() [peerId:"%s"]', protooPeer.id)
 
     let peerconnection = protooPeer.data.peerconnection
     let mediaPeer = peerconnection.peer
@@ -431,10 +432,10 @@ class Room extends EventEmitter {
         }
       })
       .catch((error) => {
-        console.error('_sendOffer() failed: %s', error)
-        console.error('stack:\n' + error.stack)
+        logger.error('_sendOffer() failed: %s', error)
+        logger.error('stack:\n' + error.stack)
 
-        console.log('resetting peerconnection')
+        logger.log('resetting peerconnection')
         peerconnection.reset()
       })
   }
@@ -466,7 +467,7 @@ class Room extends EventEmitter {
       }
     }
 
-    console.log('_updateMaxBitrate() [num peers:%s, before:%skbps, now:%skbps]',
+    logger.log('_updateMaxBitrate() [num peers:%s, before:%skbps, now:%skbps]',
       numPeers,
       Math.round(previousMaxBitrate / 1000),
       Math.round(newMaxBitrate / 1000))

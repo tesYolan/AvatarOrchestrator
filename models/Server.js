@@ -17,13 +17,7 @@ var mediasoup = require('mediasoup')
 var fs = require('fs')
 var socketIO = require('socket.io')
 var EventEmitter = require('events')
-var winston = require('winston')
-var logger = new (winston.Logger)({
-  transports: [
-    new (winston.transports.Console)({ level: 'silly' })
-    // new (winston.transports.File)({ filename: 'log_.log' })
-  ]
-})
+var logger = require('./Logger')
 
 class Server extends EventEmitter {
   constructor () {
@@ -95,7 +89,7 @@ class Server extends EventEmitter {
 
     app.use(function (err, req, res, next) {
       res.json(err)
-      logger.log('info', 'production ' + err.message)
+      logger.log('error', 'production ' + err.message)
     })
     app.set('appName', 'rest_for_head')
 
@@ -152,7 +146,7 @@ class Server extends EventEmitter {
 
       room.createProtooPeer(peerId, transport)
         .catch((error) => {
-          logger.log('info', 'error creating a protoo peer: %s', error)
+          logger.log('error', 'error creating a protoo peer: %s', error)
         })
     })
     // TODO do functional parameters.

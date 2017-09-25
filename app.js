@@ -1,12 +1,6 @@
 var mongoose = require('mongoose')
 var config = require('./config/config')
-var winston = require('winston')
-var logger = new (winston.Logger)({
-  transports: [
-    new (winston.transports.Console)({ level: 'silly' })
-    // new (winston.transports.File)({ filename: 'log_.log' })
-  ]
-})
+var logger = require('./models/Logger')
 var url = 'mongodb://' + config.mongodb_ip + ':' + config.mongodb_port + '/instances'
 var Server = require('./models/Server')
 process.title = 'rest_for_head'
