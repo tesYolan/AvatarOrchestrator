@@ -78,8 +78,8 @@ class Server extends EventEmitter {
 
     if (app.get('env') === 'development') {
       app.use(function (err, req, res, next) {
-        logger.log('error', "get's to error")
-        logger.log('error', err)
+        logger.error("get's to error")
+        logger.error(err)
         res.json(err)
         // TODO is this enough. This isn't working.
         // Here should i list every possible variations of the error.
@@ -89,7 +89,7 @@ class Server extends EventEmitter {
 
     app.use(function (err, req, res, next) {
       res.json(err)
-      logger.log('error', 'production ' + err.message)
+      logger.error('production ' + err.message)
     })
     app.set('appName', 'rest_for_head')
 
@@ -100,11 +100,11 @@ class Server extends EventEmitter {
     })
     // TODO where should this funciton be.
     this.server.listen(config.protoo.listenPort, config.protoo.listenIp, function () {
-      logger.log('info', 'Express server is listening on port ' + config.protoo.listenPort)
+      logger.info('Express server is listening on port ' + config.protoo.listenPort)
     })
     // TODO http requests.
     this.server_.listen(config.http.listenPort)
-    logger.log('info', 'listening http on port: ' + config.http.listenPort)
+    logger.info('listening http on port: ' + config.http.listenPort)
   }
 
   startSocketServer () {
@@ -146,7 +146,7 @@ class Server extends EventEmitter {
 
       room.createProtooPeer(peerId, transport)
         .catch((error) => {
-          logger.log('error', 'error creating a protoo peer: %s', error)
+          logger.error('error creating a protoo peer: %s', error)
         })
     })
     // TODO do functional parameters.

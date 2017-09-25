@@ -18,12 +18,12 @@ const rtspServer = new RtspServer(server)
 rtspServer
   .listen(config.rtspServer.listenPort)
   .on('listen', (port) => {
-    logger.log('info', `RTSP server started rtsp://${config.rtspServer.listenIp}:${config.rtspServer.listenPort}`)
+    logger.info(`RTSP server started rtsp://${config.rtspServer.listenIp}:${config.rtspServer.listenPort}`)
   })
   .on('new-source', (source) => {
     let rtspUrl = `rtsp://${config.rtspServer.listenIp}:${config.rtspServer.listenPort}/${source.id}.sdp`
     source.on('enabled', () => {
-      logger.log('info', `RTSP source available: ${rtspUrl}`)
+      logger.info(`RTSP source available: ${rtspUrl}`)
     })
   })
 process.stdin.resume()
@@ -31,7 +31,7 @@ process.stdin.resume()
 function exitHandler (options, err) {
   if (options.cleanup) {
     // TODO delete files
-    logger.log('info', 'Deleting files')
+    logger.info('Deleting files')
   }
   if (options.exit) process.exit()
 }
