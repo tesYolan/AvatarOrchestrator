@@ -17,6 +17,13 @@ var mediasoup = require('mediasoup')
 var fs = require('fs')
 var socketIO = require('socket.io')
 var EventEmitter = require('events')
+var winston = require('winston')
+var logger = new (winston.Logger)({
+  transports: [
+    new (winston.transports.Console)({ level: 'silly' })
+    // new (winston.transports.File)({ filename: 'log_.log' })
+  ]
+})
 
 class Server extends EventEmitter {
   constructor () {
@@ -77,14 +84,18 @@ class Server extends EventEmitter {
 
     if (app.get('env') === 'development') {
       app.use(function (err, req, res, next) {
-        console.log("get's to error")
-        console.log(err)
+        logger.log('error', "get's to error")
+        logger.log('error', err)
+        res.json(err)
         // TODO is this enough. This isn't working.
+        // Here should i list every possible variations of the error.
+        // List all errors as indicators for the system.
       })
     }
 
     app.use(function (err, req, res, next) {
-      console.log('production ' + err.message)
+      res.json(err)
+      logger.log('info', 'production ' + err.message)
     })
     app.set('appName', 'rest_for_head')
 
@@ -95,11 +106,11 @@ class Server extends EventEmitter {
     })
     // TODO where should this funciton be.
     this.server.listen(config.protoo.listenPort, config.protoo.listenIp, function () {
-      console.log('Express server is listening on port ' + config.protoo.listenPort)
+      logger.log('info', 'Express server is listening on port ' + config.protoo.listenPort)
     })
     // TODO http requests.
     this.server_.listen(config.http.listenPort)
-    console.log('listening http on port: ' + config.http.listenPort)
+    logger.log('info', 'listening http on port: ' + config.http.listenPort)
   }
 
   startSocketServer () {
@@ -141,7 +152,7 @@ class Server extends EventEmitter {
 
       room.createProtooPeer(peerId, transport)
         .catch((error) => {
-          console.log('error creating a protoo peer: %s', error)
+          logger.log('info', 'error creating a protoo peer: %s', error)
         })
     })
     // TODO do functional parameters.

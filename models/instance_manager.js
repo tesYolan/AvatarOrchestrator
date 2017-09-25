@@ -2,7 +2,14 @@ var Docker = require('dockerode')
 var Instances = require('./instances')
 var DisplayManager = require('./display_manager')
 var config = require('../config/config')
-
+var winston = require('winston')
+var logger = new (winston.Logger)({
+  transports: [
+    new (winston.transports.Console)()
+    // new (winston.transports.File)({ filename: 'log_.log' })
+  ]
+})
+logger.level = 'debug' || 'info' || 'log'
 var docker = new Docker()
 // TODO session manager
 
@@ -18,7 +25,7 @@ var docker = new Docker()
 module.exports.createInstance = function createInstance (req, res, next) {
   DisplayManager.createDisplay(req.body.instance_name, 4, function createNewInstance (error, display, more) {
     if (error) return next(String(error))
-    console.log(display[0])
+    logger.log(display[0])
     docker.createContainer({
       Image: config.docker_image,
       AttachStdin: false,
@@ -46,9 +53,12 @@ module.exports.createInstance = function createInstance (req, res, next) {
       StdinOnce: false,
       name: req.body.instance_name
     }, function createInstanceforDB (err, container) {
-      if (err) return next(err)
+      if (err) {
+        logger.error('error creating container')
+        return next(err)
+      }
 
-      console.log(container)
+      logger.log(container)
       var netInstance = new Instances({
         name: req.body.instance_name,
         docker_id: container.id, // TODO must use the configuration that is set on the system.
@@ -64,12 +74,16 @@ module.exports.createInstance = function createInstance (req, res, next) {
 
       })
       if (err) {
+        logger.error('error creating container - 1')
         return next(err)
       } else {
-        console.log('there is no error')
+        logger.info('there is no error')
         container.start(function saveToDB (err, data) {
-          if (err) return next(err)
-          console.log('created containter first')
+          if (err) {
+            logger.error('starting the container failed')
+            return next(err)
+          }
+          logger.log('created containter first')
           netInstance.save(function (err, instance) {
             if (err) {
               return next(err)
@@ -95,33 +109,45 @@ module.exports.createInstance = function createInstance (req, res, next) {
  * @returns {undefined}
  */
 module.exports.deleteAllInstances = function deleteAllInstances (req, res, next) {
-  console.log('Deleting All Instances')
+  logger.log('Deleting All Instances')
 
   Instances.find({}, function deleteInstances (err, instances) {
-    if (err) return next(err)
+    if (err) {
+      logger.info('error in deleteInstances')
+      return next(err)
+    }
     for (var i = 0; i < instances.length; i++) {
       (function stopInstance () {
         var name = instances[i].name
         var length = instances.length
         var j = i
-        console.log('name to stop and delete ' + name)
+        logger.log('name to stop and delete ' + name)
         var container = docker.getContainer(instances[i].name)
         container.stop(function deleteInstance (err, data) {
-          if (err) console.log('Container is stopped, Proceeding to delete') // return next(err)
-          console.log('stopped ' + name)
+          if (err) logger.log('Container is stopped, Proceeding to delete') // return next(err)
+          logger.log('stopped ' + name)
 
           container.remove(function removedInstance (err, data) {
-            if (err) return next(err)
-            console.log('deleted ' + name)
+            if (err) {
+              logger.info('error in removedInstance')
+              return next(err)
+            }
+            logger.log('deleted ' + name)
             Instances.remove(name, function removeInstanceFromDB (err, resp) {
-              if (err) return next(err)
+              if (err) {
+                logger.info('error in removeInstanceFromDB')
+                return next(err)
+              }
               DisplayManager.stopDisplay(name, function removedDisplay (error, display, more) {
-                if (err) return next(error)
-                console.log('Stopped Display')
+                if (error) {
+                  logger.info('error in removedDisplay')
+                  return next(err)
+                }
+                logger.log('Stopped Display')
               })
 
-              console.log('deleted from database ' + name)
-              console.log(j)
+              logger.log('deleted from database ' + name)
+              logger.log(j)
               if (j === length - 1) {
                 var res_ = [{'Deleted': 'Everything'}]
                 res.json(res_)
@@ -145,7 +171,10 @@ module.exports.deleteAllInstances = function deleteAllInstances (req, res, next)
 module.exports.incrementInstance = function incrementInstance (req, res, next) {
   Instances.findOneAndUpdate({ 'name': req.params.instanceId },
     {$set: req.body}, { new: true }, function (err, instance) {
-      if (err) return next(err)
+      if (err) {
+        logger.info('error in getInstanceDetail')
+        return next(err)
+      }
     })
 }
 
@@ -160,7 +189,10 @@ module.exports.incrementInstance = function incrementInstance (req, res, next) {
 module.exports.decrementInstance = function decrementInstance (req, res, next) {
   Instances.findOneAndUpdate({ 'name': req.params.instanceId },
     {$set: req.body}, { new: true }, function (err, instance) {
-      if (err) return next(err)
+      if (err) {
+        logger.info('error in getInstanceDetail')
+        return next(err)
+      }
     })
 }
 
@@ -173,20 +205,23 @@ module.exports.decrementInstance = function decrementInstance (req, res, next) {
  * @returns {undefined}
  */
 module.exports.deleteSpecificInstance = function deleteSpecificInstance (req, res, next) {
-  console.log('Deleteing specific instance ' + String(req.params.instanceId))
+  logger.log('Deleteing specific instance ' + String(req.params.instanceId))
   Instances.findOne({'name': req.params.instanceId}, function deleteInstance (err, response) {
     if (err) return next(err)
 
     var container = docker.getContainer(req.params.instanceId)
     container.stop(function (err, data) {
-      if (err) console.log('Container is stopped already, Proceeding to next') // return next(err)
+      if (err) logger.log('Container is stopped already, Proceeding to next') // return next(err)
       container.remove(function (err, data) {
         if (err) return next(err)
         DisplayManager.stopDisplay(req.params.instanceId, function (error, display, more) {
           if (error) return next(err)
-          console.log('Stopped Display')
+          logger.log('Stopped Display')
           Instances.remove({'name': req.params.instanceId}, function (err, resp) {
-            if (err) return next(err)
+            if (err) {
+              logger.info('error in getInstanceDetail')
+              return next(err)
+            }
             res.json(resp)
           })
         })
@@ -211,14 +246,17 @@ module.exports.updateInstance = function updateInstance (req, res, next) {
       var container = docker.getContainer(req.params.instanceId)
       if (req.body.started === 'false') {
         container.stop(function (err, data) {
-          console.log('Stopping Container ' + String(req.params.instanceId))
-          if (err) console.log('container is stopped already, Proceeding to next') // return next(err)
+          logger.log('Stopping Container ' + String(req.params.instanceId))
+          if (err) logger.log('container is stopped already, Proceeding to next') // return next(err)
           res.json(instance)
         })
       } else {
         container.start(function (err, data) {
-          console.log('Starting Container ' + String(req.params.instanceId))
-          if (err) return next(err)
+          logger.log('Starting Container ' + String(req.params.instanceId))
+          if (err) {
+            logger.info('error in getInstanceDetail')
+            return next(err)
+          }
           res.json(instance)
         })
       }
@@ -235,7 +273,10 @@ module.exports.updateInstance = function updateInstance (req, res, next) {
  */
 module.exports.getInstanceDetail = function getInstanceDetail (req, res, next) {
   Instances.findOne({ 'name': req.params.instanceId }, function (err, instance) {
-    if (err) return next(err)
+    if (err) {
+      logger.info('error in getInstanceDetail')
+      return next(err)
+    }
     res.json(instance)
   })
 }
@@ -261,7 +302,10 @@ module.exports.updateInstances = function updateInstances (req, res, next) {
     }
   })
   Instances.find({}, function (err, instances) {
-    if (err) return next(err)
+    if (err) {
+      logger.info('error in update')
+      return next(err)
+    }
     res.json(instances)
   })
 }
@@ -277,7 +321,7 @@ module.exports.updateInstances = function updateInstances (req, res, next) {
 module.exports.getInstances = function getInstances (req, res, next) {
   Instances.find({}, function (err, instances) {
     if (err) return next(err)
-    console.log(instances.length)
+    logger.log(instances.length)
     res.json(instances)
   })
 }

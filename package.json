@@ -30,6 +30,7 @@
     "socket.io": "^2.0.3",
     "standard": "^10.0.2",
     "uuid": "^3.1.0",
+    "winston": "^2.3.1",
     "zerorpc": "^0.9.7"
   },
   "devDependencies": {
