@@ -7,7 +7,7 @@ module.exports = {
   },
   mongodb_ip: 'localhost',
   mongodb_port: '27017',
-  docker_image: 'hanson:fresh',
+  docker_image: 'hanson:hr_pad',
   protoo: {
     listenIp: '192.168.1.38',
     listenPort: 3443

@@ -34,7 +34,7 @@ module.exports.createInstance = function createInstance (req, res, next) {
       Entrypoint: [''],
       Env: ['DISPLAY=:' + String(display[0]), 'QT_X11_NO_MITSHM=1'],
       ExposedPorts: { '4000': {}, '8000': {}, '10001': {}, '9090': {} },
-      Volumes: { '/tmp/.X11-unix': {}, '/home/tyohannes/cloned_dire/private_ws/scripts/robot.sh': {} },
+      Volumes: { '/tmp/.X11-unix': {} },
       HostConfig: {
         'PortBindings': {
           '4000': [{ 'HostPort': String(display[1][0]) }],
@@ -43,12 +43,14 @@ module.exports.createInstance = function createInstance (req, res, next) {
           '9090': [{ 'HostPort': String(display[1][3]) }]
         },
         // TODO Refactor this out. 
-        'Binds': [ '/tmp/.X11-unix:/tmp/.X11-unix:rw', '/home/tyohannes/cloned_dire/private_ws/scripts/robot.sh:/home/hanson_dev/hansonrobotics/private_ws/scripts/robot.sh' ],
+        'Binds': [ '/tmp/.X11-unix:/tmp/.X11-unix:rw' ],
         'Privileged': true
         // "Devices": ["/dev/snd","/dev/snd"]
       },
       Tty: true,
-      Cmd: ['/bin/bash', '-c', 'hr run sophia_body'],
+      // TODO don't run system command this creates delete command for container and stop the system. 
+      // Cmd: ['/bin/bash', '-c', 'hr run sophia_body'],
+      Cmd: ['/bin/bash'],
       OpenStdin: false,
       StdinOnce: false,
       name: req.body.instance_name
@@ -83,12 +85,12 @@ module.exports.createInstance = function createInstance (req, res, next) {
             logger.error('starting the container failed')
             return next(err)
           }
-          logger.info('created containter first')
           netInstance.save(function (err, instance) {
             if (err) {
               logger.error('error creating container')
               return next(err)
             }
+            logger.info('created containter first')
 
             var id = instance._id
             res.writeHead(200, {'Content-Type': 'text/plain'})
@@ -147,7 +149,7 @@ module.exports.deleteAllInstances = function deleteAllInstances (req, res, next)
                 logger.info('Stopped Display')
               })
 
-              // TODO THERE IS AN ERROR
+              // TODO THERE IS AN ERROR, WHY ISN"T IT DELETED.
               logger.info('deleted from database ' + name)
               logger.info(j)
               if (j === length - 1) {
@@ -257,20 +259,56 @@ module.exports.updateInstance = function updateInstance (req, res, next) {
     {$set: req.body}, { new: true }, function startorstopInstance (err, instance) {
       if (err) return next(err)
       var container = docker.getContainer(req.params.instanceId)
-      if (req.body.started === 'false') {
-        container.stop(function (err, data) {
-          logger.info('Stopping Container ' + String(req.params.instanceId))
-          if (err) logger.error('container is stopped already, Proceeding to next') // return next(err)
-          res.json(instance)
+      logger.info(req.body.started)
+      if (req.body.started === true) {
+        // TODO use exec, we don't start and stop containers. 
+        container.exec({
+          'AttachStdout': true,
+          'AttachStderr': true,
+          'Tty': false,
+          'Cmd': [ 'hr run sophia_body' ]
+        }, function (err, exec) {
+          if (err) {
+            logger.error('Error when tring to executed command')
+            next(err)
+          }
+          exec.start(function (err, stream) {
+            if (err) logger.error("Coudn't execute exec command") // return next(err)
+            container.modem.demuxStream(stream, process.stdout, process.stderr)
+            exec.inspect(function (err, data) {
+              if (err) {
+                next(err)
+              }
+              logger.info('Executed start command')
+              logger.info(data)
+              res.json(instance)
+            })
+          })
         })
       } else {
-        container.start(function (err, data) {
-          logger.info('Starting Container ' + String(req.params.instanceId))
+        container.exec({
+          'AttachStdout': true,
+          'AttachStderr': true,
+          'Tty': false,
+          'Cmd': ['/home/hanson_dev/hansonrobotics/hr_launchpad/stop.sh"']
+        }, function (err, exec) {
           if (err) {
-            logger.error('error in getInstanceDetail')
+            logger.error("Couldn't stop exec command")
             return next(err)
           }
-          res.json(instance)
+          exec.start(function (err, stream) {
+            if (err) {
+              logger.error('Error when trying to execute command')
+              next(err)
+            }
+            container.modem.demuxStream(stream, process.stdout, process.stderr)
+            exec.inspect(function (err, data) {
+              if (err) next(err)
+              logger.info('Stopped container command')
+              logger.info(data)
+              res.json(instance)
+            })
+          })
         })
       }
     })
