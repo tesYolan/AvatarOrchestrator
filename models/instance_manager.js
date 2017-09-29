@@ -119,6 +119,7 @@ module.exports.deleteAllInstances = function deleteAllInstances (req, res, next)
       logger.error('error in deleteInstances')
       return next(err)
     }
+    // TODO REDO THIS FOLLOWING.
     for (var i = 0; i < instances.length; i++) {
       (function stopInstance () {
         var name = instances[i].name
@@ -132,24 +133,24 @@ module.exports.deleteAllInstances = function deleteAllInstances (req, res, next)
 
           container.remove(function removedInstance (err, data) {
             if (err) {
-              logger.error('error in removedInstance')
-              return next(err)
+              logger.error(err)
+              logger.warn('Couldnt remove container, Proceeding to next element, Run Sanity Check')
             }
             logger.info('deleted ' + name)
-            Instances.remove(name, function removeInstanceFromDB (err, resp) {
+            Instances.findOneAndRemove({'name': name}, function removeInstanceFromDB (err, resp) {
               if (err) {
                 logger.error('error in removeInstanceFromDB')
                 return next(err)
               }
+              logger.info('Deleted element from DB %s', resp)
               DisplayManager.stopDisplay(name, function removedDisplay (error, display, more) {
                 if (error) {
-                  logger.error('error in removedDisplay')
-                  return next(err)
+                  logger.error('stopped display returned with %s', error)
+                  logger.warn('External Module may not be in best shape; Run Sanity Check')
                 }
                 logger.info('Stopped Display')
               })
 
-              // TODO THERE IS AN ERROR, WHY ISN"T IT DELETED.
               logger.info('deleted from database ' + name)
               logger.info(j)
               if (j === length - 1) {
@@ -228,11 +229,11 @@ module.exports.deleteSpecificInstance = function deleteSpecificInstance (req, re
         }
         DisplayManager.stopDisplay(req.params.instanceId, function (error, display, more) {
           if (error) {
-            logger.error(error)
-            return next(err)
+            logger.error('stopped display returned with %s', error)
+            logger.warn('External Module may not be in best shape; Run Sanity Check')
           }
           logger.info('Stopped Display')
-          Instances.remove({'name': req.params.instanceId}, function (err, resp) {
+          Instances.findOneAndRemove({'name': req.params.instanceId}, function (err, resp) {
             if (err) {
               logger.error('error in getInstanceDetail')
               return next(err)
