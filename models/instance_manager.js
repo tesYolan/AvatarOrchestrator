@@ -265,8 +265,7 @@ module.exports.updateInstance = function updateInstance (req, res, next) {
         container.exec({
           'AttachStdout': true,
           'AttachStderr': true,
-          'Tty': false,
-          'Cmd': [ 'hr run sophia_body' ]
+          'Cmd': [ '/bin/bash', '-c', 'hr run sophia_body' ]
         }, function (err, exec) {
           if (err) {
             logger.error('Error when tring to executed command')
@@ -289,8 +288,7 @@ module.exports.updateInstance = function updateInstance (req, res, next) {
         container.exec({
           'AttachStdout': true,
           'AttachStderr': true,
-          'Tty': false,
-          'Cmd': ['/home/hanson_dev/hansonrobotics/hr_launchpad/stop.sh"']
+          'Cmd': ['/bin/bash', '-c', '/home/hanson_dev/hansonrobotics/hr_launchpad/stop.sh']
         }, function (err, exec) {
           if (err) {
             logger.error("Couldn't stop exec command")
