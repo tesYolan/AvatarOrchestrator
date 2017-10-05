@@ -36,6 +36,8 @@ class Misc:
         self.HTTP_PORT = '8090'
         self.HTTPS_PORT = '5443'
 
+        self.LOG_LEVEL = 'error' # possible commands, quiet, panic, fatal, error, warning, info...
+
     def create_display(self,instance_name,num_ports): 
         vdisplay = Xvfb(self.width,self.height,self.colordepth)
         vdisplay.start()
@@ -74,16 +76,16 @@ class Misc:
         # ffmpeg -f alsa -i default -f x11grab -s 1366x768 -r 30 -i :0.0 -sameq filename.avi
         if self.stream == 'rtsp': 
             print('rtsp streaming setup')
-            self.process[instance_name] = subprocess.Popen([self.FFMPEG,'-f','x11grab','-s',self.resolution,'-probesize','10M','-i',display_record,'-c:v','h264','-preset','ultrafast','-pix_fmt','yuv420p','-crf','0','-f','rtsp','-rtsp_transport','tcp','rtsp://' + self.RTSP_IP + ':' + self.RTSP_PORT + '/live/'+str(instance_name)])
+            self.process[instance_name] = subprocess.Popen([self.FFMPEG,'-loglevel',self.LOG_LEVEL,'-f','x11grab','-s',self.resolution,'-probesize','10M','-i',display_record,'-c:v','h264','-preset','ultrafast','-pix_fmt','yuv420p','-crf','0','-f','rtsp','-rtsp_transport','tcp','rtsp://' + self.RTSP_IP + ':' + self.RTSP_PORT + '/live/'+str(instance_name)])
         elif self.stream == 'hls':
             print('hls to file setup')
-            self.process[instance_name] = subprocess.Popen([self.FFMPEG,'-f','x11grab','-s',self.resolution,'-probesize','10M','-i',display_record,'-c:v','h264','-preset','ultrafast','-pix_fmt','yuv420p','-crf','0','-f','hls',self.STREAM_LOC+str(instance_name)+'.m3u8'])
+            self.process[instance_name] = subprocess.Popen([self.FFMPEG,'-loglevel',self.LOG_LEVEL,'-f','x11grab','-s',self.resolution,'-probesize','10M','-i',display_record,'-c:v','h264','-preset','ultrafast','-pix_fmt','yuv420p','-crf','0','-f','hls',self.STREAM_LOC+str(instance_name)+'.m3u8'])
         elif self.stream == 'hls_http':
             print('hls streaming setup using ngix')
-            self.process[instance_name] = subprocess.Popen([self.FFMPEG,'-f','x11grab','-s',self.resolution,'-probesize','10M','-i',display_record,'-c:v','h264','-preset','ultrafast','-pix_fmt','yuv420p','-crf','0','-f','hls','-method','PUT','https://' + self.HTTPS_IP + ':' + self.HTTPS_PORT + '/live/'+str(instance_name)+'.m3u8'])
+            self.process[instance_name] = subprocess.Popen([self.FFMPEG,'-loglevel',self.LOG_LEVEL,'-f','x11grab','-s',self.resolution,'-probesize','10M','-i',display_record,'-c:v','h264','-preset','ultrafast','-pix_fmt','yuv420p','-crf','0','-f','hls','-method','PUT','https://' + self.HTTPS_IP + ':' + self.HTTPS_PORT + '/live/'+str(instance_name)+'.m3u8'])
         elif self.stream == 'rtmp':
             print('rtmp streaming setup')
-            self.process[instance_name] = subprocess.Popen([self.FFMPEG,'-f','x11grab','-s',self.resolution,'-probesize','10M','-i',display_record,'-c:v','h264','-c:a','aac','-preset','ultrafast','-pix_fmt','yuv420p','-crf','0','-f','flv','rtmp://' + self.RTMP_IP + ':' + self.RTMP_PORT + '/live/'+str(instance_name)])
+            self.process[instance_name] = subprocess.Popen([self.FFMPEG,'-loglevel',self.LOG_LEVEL,'-f','x11grab','-s',self.resolution,'-probesize','10M','-i',display_record,'-c:v','h264','-c:a','aac','-preset','ultrafast','-pix_fmt','yuv420p','-crf','0','-f','flv','rtmp://' + self.RTMP_IP + ':' + self.RTMP_PORT + '/live/'+str(instance_name)])
             
         return True
 

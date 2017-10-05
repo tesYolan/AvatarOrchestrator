@@ -23,26 +23,27 @@ var docker = new Docker()
  * @returns {undefined}
  */
 module.exports.createInstance = function createInstance (req, res, next) {
-  DisplayManager.createDisplay(req.body.instance_name, 4, function createNewInstance (error, display, more) {
+  DisplayManager.createDisplay(req.body.instance_name, 6, function createNewInstance (error, display, more) {
     if (error) return next(String(error))
     logger.info(display[0])
     docker.createContainer({
       Image: config.docker_image,
-      AttachStdin: false,
+      // AttachStdin: true,
       AttachStdout: true,
       AttachStderr: true,
       Entrypoint: [''],
       Env: ['DISPLAY=:' + String(display[0]), 'QT_X11_NO_MITSHM=1'],
-      ExposedPorts: { '4000': {}, '8000': {}, '10001': {}, '9090': {} },
+      ExposedPorts: { '4000': {}, '8000': {}, '10001': {}, '9090': {}, '4242': {}, '5999': {} },
       Volumes: { '/tmp/.X11-unix': {} },
       HostConfig: {
         'PortBindings': {
-          '4000': [{ 'HostPort': String(display[1][0]) }],
-          '8000': [{ 'HostPort': String(display[1][1]) }],
-          '10001': [{ 'HostPort': String(display[1][2]) }],
-          '9090': [{ 'HostPort': String(display[1][3]) }]
+          '4000': [{ 'HostPort': String(display[1][0]) }], // FOR HTTPS request
+          '8000': [{ 'HostPort': String(display[1][1]) }], // FOR HTTP request
+          '10001': [{ 'HostPort': String(display[1][2]) }], // FOR WHAT?
+          '9090': [{ 'HostPort': String(display[1][3]) }], // FOR WEBSOCKET ROS -> IS THIS NEEDED
+          '4242': [{ 'HostPort': String(display[1][4]) }], // FOR RPC commands in the containers
+          '5999': [{ 'HostPort': String(display[1][5]) }] // FOR RTSP 
         },
-        // TODO Refactor this out. 
         'Binds': [ '/tmp/.X11-unix:/tmp/.X11-unix:rw' ],
         'Privileged': true
         // "Devices": ["/dev/snd","/dev/snd"]
@@ -262,17 +263,17 @@ module.exports.updateInstance = function updateInstance (req, res, next) {
       var container = docker.getContainer(req.params.instanceId)
       logger.info(req.body.started)
       if (req.body.started === true) {
-        // TODO use exec, we don't start and stop containers. 
+        // TODO the following command terminates the detached command 
         container.exec({
           'AttachStdout': true,
           'AttachStderr': true,
-          'Cmd': [ '/bin/bash', '-c', 'hr run sophia_body' ]
+          'Cmd': [ '/bin/script', '-c', 'hr run sophia_body' ]
         }, function (err, exec) {
           if (err) {
             logger.error('Error when tring to executed command')
             next(err)
           }
-          exec.start(function (err, stream) {
+          exec.start({'Detach': true}, function (err, stream) {
             if (err) logger.error("Coudn't execute exec command") // return next(err)
             container.modem.demuxStream(stream, process.stdout, process.stderr)
             exec.inspect(function (err, data) {
@@ -289,13 +290,13 @@ module.exports.updateInstance = function updateInstance (req, res, next) {
         container.exec({
           'AttachStdout': true,
           'AttachStderr': true,
-          'Cmd': ['/bin/bash', '-c', '/home/hanson_dev/hansonrobotics/hr_launchpad/stop.sh']
+          'Cmd': ['/bin/script', '-c', '/home/hanson_dev/hansonrobotics/hr_launchpad/stop.sh']
         }, function (err, exec) {
           if (err) {
             logger.error("Couldn't stop exec command")
             return next(err)
           }
-          exec.start(function (err, stream) {
+          exec.start({'Detach': true}, function (err, stream) {
             if (err) {
               logger.error('Error when trying to execute command')
               next(err)
