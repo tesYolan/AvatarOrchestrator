@@ -7,7 +7,10 @@ var instanceSetting = mongoose.Schema({
   port_secure: {type: Number, required: true},
   port: {type: Number, required: true},
   port_web_socket: {type: Number, required: true}, // TODO how can we actually allow the websocet to be changed in the system.
-  display: {type: Number, required: true}
+  dummy: {type: Number, required: true}, // TODO how can we actually allow the websocet to be changed in the system.
+  display: {type: Number, required: true},
+  RPC: {type: Number, required: true},
+  RTSP: {type: Number, required: true}
 })
 var instanceSchema = mongoose.Schema({
   name: { type: String, required: true, unique: true },
@@ -15,7 +18,8 @@ var instanceSchema = mongoose.Schema({
   token_id: { type: String, required: true },
   in_session: { type: Number, required: true },
   started: { type: Boolean, required: true },
-  config: [ instanceConfiguration, instanceSetting ]
+  instance_config: [ instanceConfiguration ],
+  instance_values: [ instanceSetting ]
 },
 { timestamps: true }
 )

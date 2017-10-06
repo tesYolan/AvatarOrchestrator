@@ -1,6 +1,7 @@
 var Docker = require('dockerode')
 var Instances = require('./instances')
 var DisplayManager = require('./display_manager')
+var RPCManager = require('./rpc_manager')
 var config = require('../config/config')
 var winston = require('winston')
 var logger = new (winston.Logger)({
@@ -61,18 +62,26 @@ module.exports.createInstance = function createInstance (req, res, next) {
         return next(err)
       }
 
-      logger.info(container)
+      logger.info(display)
       var netInstance = new Instances({
         name: req.body.instance_name,
         docker_id: container.id, // TODO must use the configuration that is set on the system.
         token_id: req.body.instance_name + '_' + container.id, // TODO create a unique parameter for this.
         in_session: 0, // TODO increase when the user is actually accessing the system.
         started: true,
-        config: [
-          {
-            vision_stack: req.body.vision_tool,
-            chat_stack: req.body.chatbot
-          }
+        instance_config: [{
+          vision_stack: req.body.vision_tool,
+          chat_stack: req.body.chatbot
+        }],
+        instance_values: [{
+          port_secure: display[1][0],
+          port: display[1][1],
+          port_web_socket: display[1][2],
+          dummy: display[1][3],
+          display: display[0],
+          RPC: display[1][4],
+          RTSP: display[1][5]
+        }
         ]
 
       })
@@ -260,55 +269,17 @@ module.exports.updateInstance = function updateInstance (req, res, next) {
   Instances.findOneAndUpdate({'name': req.params.instanceId},
     {$set: req.body}, { new: true }, function startorstopInstance (err, instance) {
       if (err) return next(err)
-      var container = docker.getContainer(req.params.instanceId)
       logger.info(req.body.started)
       if (req.body.started === true) {
         // TODO the following command terminates the detached command 
-        container.exec({
-          'AttachStdout': true,
-          'AttachStderr': true,
-          'Cmd': [ '/bin/script', '-c', 'hr run sophia_body' ]
-        }, function (err, exec) {
-          if (err) {
-            logger.error('Error when tring to executed command')
-            next(err)
-          }
-          exec.start({'Detach': true}, function (err, stream) {
-            if (err) logger.error("Coudn't execute exec command") // return next(err)
-            container.modem.demuxStream(stream, process.stdout, process.stderr)
-            exec.inspect(function (err, data) {
-              if (err) {
-                next(err)
-              }
-              logger.info('Executed start command')
-              logger.info(data)
-              res.json(instance)
-            })
-          })
+        RPCManager.createSession(instance.body.name, instance.body.config.RPC, function startedSession (err, instance) {
+          if (err) logger.error(err)
+          logger.info('Starting the session')
         })
       } else {
-        container.exec({
-          'AttachStdout': true,
-          'AttachStderr': true,
-          'Cmd': ['/bin/script', '-c', '/home/hanson_dev/hansonrobotics/hr_launchpad/stop.sh']
-        }, function (err, exec) {
-          if (err) {
-            logger.error("Couldn't stop exec command")
-            return next(err)
-          }
-          exec.start({'Detach': true}, function (err, stream) {
-            if (err) {
-              logger.error('Error when trying to execute command')
-              next(err)
-            }
-            container.modem.demuxStream(stream, process.stdout, process.stderr)
-            exec.inspect(function (err, data) {
-              if (err) next(err)
-              logger.info('Stopped container command')
-              logger.info(data)
-              res.json(instance)
-            })
-          })
+        RPCManager.createSession(instance.body.name, instance.body.config.RPC, function startedSession (err, instance) {
+          if (err) logger.error(err)
+          logger.info('Starting the session')
         })
       }
     })
