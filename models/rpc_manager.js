@@ -1,6 +1,6 @@
 var zerorpc = require('zerorpc')
 
-var client = new zerorpc.Client()
+var client = new zerorpc.Client({timeout: (300000), heartbeatInterval: (Number.MAX_VALUE / 2)})
 
 /**
  * createDisplay
