@@ -266,23 +266,30 @@ module.exports.deleteSpecificInstance = function deleteSpecificInstance (req, re
  * @returns {undefined}
  */
 module.exports.updateInstance = function updateInstance (req, res, next) {
-  Instances.findOneAndUpdate({'name': req.params.instanceId},
-    {$set: req.body}, { new: true }, function startorstopInstance (err, instance) {
-      if (err) return next(err)
-      logger.info(req.body.started)
-      if (req.body.started === true) {
-        // TODO the following command terminates the detached command 
-        RPCManager.createSession(instance.body.name, instance.body.config.RPC, function startedSession (err, instance) {
-          if (err) logger.error(err)
-          logger.info('Starting the session')
-        })
-      } else {
-        RPCManager.createSession(instance.body.name, instance.body.config.RPC, function startedSession (err, instance) {
-          if (err) logger.error(err)
-          logger.info('Starting the session')
-        })
-      }
-    })
+  Instances.findOne({ 'name': req.params.instanceId }, function (err, instance) {
+    if (err) {
+      logger.error("Couldn't find entry")
+      return next(err)
+    }
+    logger.info('Request is looking for %s', req.params.instanceId)
+    logger.info(JSON.stringify(instance.instance_values[0]))
+    if (req.body.started === true) {
+      // TODO the following command terminates the detached command 
+      RPCManager.createSession(instance.name, instance.instance_values[0].RPC, function startedSession (err, instance) {
+        if (err) logger.error(err)
+        logger.info('Starting the session')
+        // TODO update the returned variable before sending it back.
+        res.json(instance)
+      })
+    } else {
+      RPCManager.createSession(instance.name, instance.instance_values[0].RPC, function startedSession (err, instance) {
+        if (err) logger.error(err)
+        logger.info('Starting the session')
+        // TODO update the returned variable before sending it back.
+        res.json(instance)
+      })
+    }
+  })
 }
 
 /**
