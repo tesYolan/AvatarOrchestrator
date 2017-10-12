@@ -1,4 +1,5 @@
 var zerorpc = require('zerorpc')
+var config = require('../config/config')
 
 var client = new zerorpc.Client({timeout: (300000), heartbeatInterval: (Number.MAX_VALUE / 2)})
 
@@ -11,11 +12,11 @@ var client = new zerorpc.Client({timeout: (300000), heartbeatInterval: (Number.M
  * @returns {undefined}
  */
 module.exports.createSession = function createSession (name, numPort, callback) {
-  client.connect('tcp://127.0.0.1:' + numPort)
+  client.connect('tcp://' + config.docker_ip + ':' + numPort)
   client.invoke('create_tmux', {'instance_name': name}, callback)
 }
 
 module.exports.stopSession = function stopSession (name, numPort, callback) {
-  client.connect('tcp://127.0.0.1:' + numPort)
+  client.connect('tcp://' + config.docker_ip + ':' + numPort)
   client.invoke('delete_session', {'instance_name': name}, callback)
 }

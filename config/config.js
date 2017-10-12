@@ -2,12 +2,13 @@ module.exports = {
   debug: '*LOG* *WARN* *ERROR* *mediasoup-worker*',
   domain: 'localhost',
   tls: {
-    cert: `${__dirname}/mediasoup-demo.localhost.cert.pem`,
-    key: `${__dirname}/mediasoup-demo.localhost.key.pem`
+    cert: `${__dirname}/server.crt`,
+    key: `${__dirname}/server.key`
   },
   mongodb_ip: 'localhost',
   mongodb_port: '27017',
-  docker_image: 'hanson:hr_pad',
+  docker_ip: '0.0.0.0',
+  docker_image: 'hanson:rpc',
   protoo: {
     listenIp: '192.168.1.38',
     listenPort: 3443
