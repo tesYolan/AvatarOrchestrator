@@ -32,8 +32,8 @@ module.exports.createInstance = function createInstance (req, res, next) {
       // AttachStdin: true,
       AttachStdout: true,
       AttachStderr: true,
-      Entrypoint: [''],
-      Env: ['DISPLAY=:' + String(display[0]), 'QT_X11_NO_MITSHM=1'],
+      Entrypoint: ['/bin/sh', '-c', 'python /home/hanson_dev/hansonrobotics/hr_launchpad/misc.py'],
+      Env: ['DISPLAY=:' + String(display[0]), 'QT_X11_NO_MITSHM=1', 'VGL_DISPLAY=:' + String(display[0])],
       ExposedPorts: { '4000': {}, '8000': {}, '10001': {}, '9090': {}, '4242': {}, '5999': {} },
       Volumes: { '/tmp/.X11-unix': {} },
       HostConfig: {
