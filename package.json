@@ -21,7 +21,7 @@
     "dockerode": "^2.4.3",
     "express": "^4.15.2",
     "mediasoup": "^1.2.8",
-    "mediasoup-server": "^1.0.7",
+    "mediasoup-server": "git+https://github.com/tesYolan/mediasoup-server.git",
     "mocha": "^3.3.0",
     "mongoose": "^4.9.9",
     "morgan": "^1.8.1",

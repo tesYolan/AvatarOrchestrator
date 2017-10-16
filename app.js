@@ -20,7 +20,10 @@ rtspServer
   .on('listen', (port) => {
     logger.info(`RTSP server started rtsp://${config.rtspServer.listenIp}:${config.rtspServer.listenPort}`)
   })
-  .on('new-source', (source) => {
+  .on('new-source', (source, roomId) => {
+    // TODO now, how can we forward this rtsp instance to that of the docker container. The room id
+    // is the instance where which must direct this stream to.
+    logger.info('room id is %s', roomId)
     let rtspUrl = `rtsp://${config.rtspServer.listenIp}:${config.rtspServer.listenPort}/${source.id}.sdp`
     source.on('enabled', () => {
       logger.info(`RTSP source available: ${rtspUrl}`)

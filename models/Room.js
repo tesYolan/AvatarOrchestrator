@@ -201,7 +201,7 @@ class Room extends EventEmitter {
     // Create a RTCPeerConnection instance and set media capabilities.
       .then((data) => {
         mediaPeer.on('newrtpreceiver', (rtpReceiver) => {
-          this.emit('new-stream', rtpReceiver)
+          this.emit('new-stream', rtpReceiver, this._roomId)
         })
         peerconnection = new webrtc.RTCPeerConnection(
           {

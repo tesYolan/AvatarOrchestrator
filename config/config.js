@@ -2,8 +2,8 @@ module.exports = {
   debug: '*LOG* *WARN* *ERROR* *mediasoup-worker*',
   domain: 'localhost',
   tls: {
-    cert: `${__dirname}/server.crt`,
-    key: `${__dirname}/server.key`
+    cert: `${__dirname}/mediasoup-demo.localhost.cert.pem`,
+    key: `${__dirname}/mediasoup-demo.localhost.key.pem`
   },
   mongodb_ip: 'localhost',
   mongodb_port: '27017',
