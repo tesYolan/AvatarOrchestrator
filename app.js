@@ -29,6 +29,9 @@ rtspServer
       logger.info(`RTSP source available: ${rtspUrl}`)
     })
   })
+  .on('error', (err) => {
+    logger.error(err)
+  })
 process.stdin.resume()
 
 function exitHandler (options, err) {

@@ -130,6 +130,7 @@ module.exports.deleteAllInstances = function deleteAllInstances (req, res, next)
       return next(err)
     }
     // TODO REDO THIS FOLLOWING.
+    if (instances.length === 0) { res.json(instances) }
     for (var i = 0; i < instances.length; i++) {
       (function stopInstance () {
         var name = instances[i].name
