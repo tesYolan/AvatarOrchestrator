@@ -68,7 +68,7 @@ module.exports.createInstance = function createInstance (req, res, next) {
         docker_id: container.id, // TODO must use the configuration that is set on the system.
         token_id: req.body.instance_name + '_' + container.id, // TODO create a unique parameter for this.
         in_session: 0, // TODO increase when the user is actually accessing the system.
-        started: true,
+        started: false,
         instance_config: [{
           vision_stack: req.body.vision_tool,
           chat_stack: req.body.chatbot
@@ -273,20 +273,33 @@ module.exports.updateInstance = function updateInstance (req, res, next) {
     }
     logger.info('Request is looking for %s', req.params.instanceId)
     logger.info(JSON.stringify(instance.instance_values[0]))
-    if (req.body.started === true) {
+    logger.info(req.body.started)
+    if (req.body.started === 'true') {
       // TODO the following command terminates the detached command 
       RPCManager.createSession(instance.name, instance.instance_values[0].RPC, function startedSession (err, instance) {
         if (err) logger.error(err)
         logger.info('Starting the session')
         // TODO update the returned variable before sending it back.
-        res.json(instance)
+        Instances.findOneAndUpdate({'name': req.params.instanceId}, {$set: {'started': req.body.started}}, {new: true}, function (err, instance) {
+          if (err) {
+            logger.error(err)
+            return next(err)
+          }
+          res.json(instance)
+        })
       })
     } else {
-      RPCManager.createSession(instance.name, instance.instance_values[0].RPC, function startedSession (err, instance) {
+      RPCManager.stopSession(instance.name, instance.instance_values[0].RPC, function startedSession (err, instance) {
         if (err) logger.error(err)
-        logger.info('Starting the session')
+        logger.info('Stopping the session')
         // TODO update the returned variable before sending it back.
-        res.json(instance)
+        Instances.findOneAndUpdate({'name': req.params.instanceId}, {$set: {'started': req.body.started}}, {new: true}, function (err, instance) {
+          if (err) {
+            logger.error(err)
+            return next(err)
+          }
+          res.json(instance)
+        })
       })
     }
   })
