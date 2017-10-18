@@ -1,4 +1,3 @@
-var path = require('path')
 var url_ = require('url')
 var bodyParser = require('body-parser')
 var https = require('https')
@@ -18,6 +17,8 @@ var fs = require('fs')
 var socketIO = require('socket.io')
 var EventEmitter = require('events')
 var logger = require('./Logger')
+
+var validator = require('express-validator')
 
 class Server extends EventEmitter {
   constructor () {
@@ -70,9 +71,10 @@ class Server extends EventEmitter {
       key: fs.readFileSync(config.tls.key)
     }
     app.use(bodyParser.json())
+    app.use(validator())
     app.use(cors())
     // TODO refactor this to handle
-    app.use('/stream', express.static(path.join(__dirname, '/../stream')))
+    // app.use('/stream', express.static(path.join(__dirname, '/../stream')))
     app.use(instanceRouter)
     app.use(configurationRouter)
 

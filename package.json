@@ -20,6 +20,7 @@
     "cors": "^2.8.3",
     "dockerode": "^2.4.3",
     "express": "^4.15.2",
+    "express-validator": "^4.2.1",
     "mediasoup": "^1.2.8",
     "mediasoup-server": "git+https://github.com/tesYolan/mediasoup-server.git",
     "mocha": "^3.3.0",

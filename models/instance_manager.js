@@ -4,6 +4,8 @@ var DisplayManager = require('./display_manager')
 var RPCManager = require('./rpc_manager')
 var config = require('../config/config')
 var winston = require('winston')
+var { check, validationResult } = require('express-validator/check')
+var { matched, sanitize } = require('express-validator/filter')
 var logger = new (winston.Logger)({
   transports: [
     new (winston.transports.Console)()
@@ -12,7 +14,6 @@ var logger = new (winston.Logger)({
 })
 logger.level = 'debug' || 'info' || 'log'
 var docker = new Docker()
-// TODO session manager
 
 /**
  * createInstance code to create instance. The creates creates and starts the instance. 
@@ -24,6 +25,11 @@ var docker = new Docker()
  * @returns {undefined}
  */
 module.exports.createInstance = function createInstance (req, res, next) {
+  // TODO here validate the request that I am sending back. 
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    return res.status(422).json({errors: errors.mapped()})
+  }
   DisplayManager.createDisplay(req.body.instance_name, 6, function createNewInstance (error, display, more) {
     if (error) return next(String(error))
     logger.info(display[0])
@@ -177,7 +183,7 @@ module.exports.deleteAllInstances = function deleteAllInstances (req, res, next)
 }
 
 /**
- * incrementInstance - not used. 
+ * incrementInstance - not used. Removed in a next major refactoring.
  * @deprecated Using mediasoup
  * @param req
  * @param res
@@ -195,7 +201,7 @@ module.exports.incrementInstance = function incrementInstance (req, res, next) {
 }
 
 /**
- * decrementInstance
+ * decrementInstance - not used. Removed in next major refactoring.
  * @deprecated Using mediasoup. Delete the next system. 
  * @param req
  * @param res
@@ -267,6 +273,10 @@ module.exports.deleteSpecificInstance = function deleteSpecificInstance (req, re
  * @returns {undefined}
  */
 module.exports.updateInstance = function updateInstance (req, res, next) {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.mapped() })
+  }
   Instances.findOne({ 'name': req.params.instanceId }, function (err, instance) {
     if (err) {
       logger.error("Couldn't find entry")
@@ -325,7 +335,7 @@ module.exports.getInstanceDetail = function getInstanceDetail (req, res, next) {
 }
 
 /**
- * updateInstances - Same as updateInstance but for all the instances. 
+ * updateInstances - Same as updateInstance but for all the instances. Currently not used, as the logic doesn't yet make sense.
  *
  * @param req - not used
  * @param res - All the instances. 

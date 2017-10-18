@@ -1,18 +1,30 @@
 var express = require('express')
 var instanceRouter = express.Router()
 var InstanceManager = require('../models/instance_manager')
-
+// TODO validation for each of this commands before sending it to the function.
+var { check, validationResult } = require('express-validator/check')
 instanceRouter.route('/instances')
   .get(InstanceManager.getInstances)
-  .post(InstanceManager.createInstance)
+  .post([
+    check('instance_name').exists().withMessage('Name must specified'),
+    check('vision_tool').exists().withMessage('Vision tool must be specified'),
+    check('chatbot').exists().withMessage('Specifiy chatbot')
+  ], InstanceManager.createInstance)
   .delete(InstanceManager.deleteAllInstances)
-  .put(InstanceManager.updateInstances)
+//  TODO how is the logic for starting to work? Some may be open, some may be closed. So let's skip this.
+//  .put([
+//    check('started').exists()
+//  ], InstanceManager.updateInstances)
 instanceRouter.route('/instances/:instanceId')
   .get(InstanceManager.getInstanceDetail)
-  .put(InstanceManager.updateInstance)
+  .put([
+    // TODO isn't there a better way.
+    check('started').exists().withMessage('must set start status')
+  ], InstanceManager.updateInstance)
   .delete(InstanceManager.deleteSpecificInstance)
-instanceRouter.route('/instances/:instanceId/increment')
-  .put(InstanceManager.incrementInstance)
-instanceRouter.route('/instances/:instanceId/decrement')
-  .put(InstanceManager.decrementInstance)
+// TODO this don't have functionality.
+// instanceRouter.route('/instances/:instanceId/increment')
+//  .put(InstanceManager.incrementInstance)
+// instanceRouter.route('/instances/:instanceId/decrement')
+//  .put(InstanceManager.decrementInstance)
 module.exports = instanceRouter
