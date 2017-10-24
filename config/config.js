@@ -16,9 +16,17 @@ module.exports = {
   http: {
     listenPort: 3011
   },
+  rtmpServer: {
+    listenIp: '192.168.1.38',
+    listenPort: '5442'
+  },
   rtspServer: {
     listenIp: '192.168.1.38',
     listenPort: 5000
+  },
+  resolution: {
+    width: '1366',
+    height: '768'
   },
   mediasoup: {
     logLevel: 'debug',
@@ -35,7 +43,8 @@ module.exports = {
     rtcMinPort: 40000,
     rtcMaxPort: 49999,
     roomCodecs: [
-      {kind: 'audio',
+      {
+        kind: 'audio',
         name: 'audio/opus',
         clockRate: 48000,
         parameters: {

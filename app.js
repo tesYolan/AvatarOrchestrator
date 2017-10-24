@@ -3,6 +3,7 @@ var config = require('./config/config')
 var logger = require('./models/Logger')
 var url = 'mongodb://' + config.mongodb_ip + ':' + config.mongodb_port + '/instances'
 var Server = require('./models/Server')
+var Stream = require('node-rtsp-stream')
 process.title = 'rest_for_head'
 mongoose.Promise = global.Promise
 mongoose.connect(url, { useMongoClient: true })
@@ -27,6 +28,11 @@ rtspServer
     let rtspUrl = `rtsp://${config.rtspServer.listenIp}:${config.rtspServer.listenPort}/${source.id}.sdp`
     source.on('enabled', () => {
       logger.info(`RTSP source available: ${rtspUrl}`)
+      //       stream = new Stream({
+      //        name: roomId,
+      //        streamUrl: rtspUrl,
+      //        wsPort: 9999
+      //      })
     })
   })
   .on('error', (err) => {
