@@ -3,7 +3,7 @@ var config = require('./config/config')
 var logger = require('./models/Logger')
 var url = 'mongodb://' + config.mongodb_ip + ':' + config.mongodb_port + '/instances'
 var Server = require('./models/Server')
-var Stream = require('node-rtsp-stream')
+// var Stream = require('node-rtsp-stream')
 process.title = 'rest_for_head'
 mongoose.Promise = global.Promise
 mongoose.connect(url, { useMongoClient: true })

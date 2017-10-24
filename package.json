@@ -11,8 +11,8 @@
     "start-server": "nodemon app.js",
     "run-display": "python py-app/misc.py",
     "start-admin": "cd Talk-To-Sophia-Admin && npm start",
-    "start-client": "cd mediasoup-demo && gulp live",
-    "deploy": "concurrently --kill-others \"npm run start-server\" \"npm run run-display\""
+    "start-client": "cd mediasoup-demo/app && gulp live",
+    "deploy": "concurrently --kill-others \"npm run start-server\" \"npm run run-display\" \"npm run start-admin\" \"npm run start-client\""
   },
   "keywords": [
     "HEAD"
