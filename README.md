@@ -82,7 +82,7 @@ systemctl status nginx.service
 * It's necessary to download the docker image for the HEAD initially.
 # How to install
     git clone --recursive https://github.com/tesYolan/Restforhead.git
-    npm install
+    npm install # This recursively installs the dependencies requirements for each submodule.
     npm run deploy # Include everthing.
 
 ## Install Python Requirements
