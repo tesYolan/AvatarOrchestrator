@@ -78,15 +78,16 @@ systemctl status nginx.service
 * Change [http port](https://github.com/tesYolan/Restforhead/blob/master/config/config.js#L15) to direct the API calls.
 ## Docker Configuration
 
+
+* It's necessary to download the docker image for the HEAD initially.
+# How to install
+    git clone --recursive https://github.com/tesYolan/Restforhead.git
+    npm install
+    npm run deploy # Include everthing.
+
 ## Install Python Requirements
     cd py-app
     pip install -r requirments.txt
-
-* It's necessary to download the docker image for the HEAD initially.
-# How to run
-
-    npm install
-    npm run deploy
 
 
 # TODO 

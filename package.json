@@ -4,9 +4,12 @@
   "description": "Server side api for Hanson Environment for Application Development (HEAD). ",
   "main": "index.js",
   "scripts": {
+    "postinstall": "concurrently --kill-others \"cd Talk-To-Sophia-Admin && npm install\" \"cd mediasoup-demo/app/ && npm install\"",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start-server": "nodemon app.js",
     "run-display": "python py-app/misc.py",
+    "start-admin": "cd Talk-To-Sophia-Admin && npm start",
+    "start-client": "cd mediasoup-demo && gulp live",
     "deploy": "concurrently --kill-others \"npm run start-server\" \"npm run run-display\""
   },
   "keywords": [
