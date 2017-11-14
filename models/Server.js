@@ -48,6 +48,24 @@ class Server extends EventEmitter {
     global.SERVER = this.mediaServer
     this.mediaServer.on('newroom', (room) => {
       global.ROOM = room
+
+      room.on('newpeer', (peer) => {
+        global.PEER = peer
+
+        if (peer.consumers.length > 0) { global.CONSUMER = peer.consumers[peer.consumers.length - 1] }
+
+        peer.on('newtransport', (transport) => {
+          global.TRANSPORT = transport
+        })
+
+        peer.on('newproducer', (producer) => {
+          global.PRODUCER = producer
+        })
+
+        peer.on('newconsumer', (consumer) => {
+          global.CONSUMER = consumer
+        })
+      })
     })
 
     if (!this.webServer) {
@@ -121,35 +139,55 @@ class Server extends EventEmitter {
 
     webSocketServer.on('connectionrequest', (info, accept, reject) => {
       let u = url_.parse(info.request.url, true)
-      let roomId = u.query['room-id']
-      let peerId = u.query['peer-id']
+      let roomId = u.query['roomId']
+      let peerName = u.query['peerName']
 
-      if (!roomId || !peerId) {
-        reject(400, 'Connection request without roomId and/or peerId')
+      logger.info(
+        'connection request [roomId:"%s", peerName:"%s"]', roomId, peerName)
+      let room
+      if (!roomId || !peerName) {
+        logger.warn('connection request without roomId and/or peerName')
+
+        reject(400, 'Connection request without roomId and/or peerName')
+
         return
       }
+      logger.info(
+        'connection request [roomId:"%s", peerName:"%s"]', roomId, peerName)
 
       if (!this.rooms.has(roomId)) {
-        let room = new Room(roomId, this.mediaServer)
-        let logStatusTimer = setInterval(() => {
+        logger.info('creating a new Room [roomId:"%s"]', roomId)
+
+        try {
+          room = new Room(roomId, this.mediaServer)
+
+          global.APP_ROOM = room
+        } catch (error) {
+          logger.error('error creating a new Room: %s', error)
+
+          reject(error)
+
+          return
+        }
+
+        const logStatusTimer = setInterval(() => {
           room.logStatus()
-        }, 10000)
+        }, 30000)
 
         this.rooms.set(roomId, room)
         this.emit('new-connection', room)
+
         room.on('close', () => {
           this.rooms.delete(roomId)
           clearInterval(logStatusTimer)
         })
+      } else {
+        room = this.rooms.get(roomId)
       }
 
-      let room = this.rooms.get(roomId)
       let transport = accept()
 
-      room.createProtooPeer(peerId, transport)
-        .catch((error) => {
-          logger.error('error creating a protoo peer: %s', error)
-        })
+      room.handleConnection(peerName, transport)
     })
     // TODO do functional parameters.
   }

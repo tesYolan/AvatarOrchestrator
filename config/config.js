@@ -32,8 +32,12 @@ module.exports = {
     logLevel: 'debug',
     logTags: [
       'info',
+      'ice',
+      'dlts',
       'rtp',
+      'srtp',
       'rtcp',
+      'rbe',
       'rtx'
     ],
     rtcIPv4: true,
@@ -42,30 +46,30 @@ module.exports = {
     rtcAnnouncedIPv6: null,
     rtcMinPort: 40000,
     rtcMaxPort: 49999,
-    roomCodecs: [
+    mediaCodecs: [
       {
         kind: 'audio',
-        name: 'audio/opus',
+        name: 'opus',
         clockRate: 48000,
+        channels: 2,
         parameters: {
-          useInbandFec: 1,
-          minptime: 10
+          useInbandFec: 1
         }
       },
       {
         kind: 'video',
-        name: 'video/h264',
-        clockRate: 90000,
-        payloadType: 123,
-        parameters: {
-          packetizationMode: 1
-        }
+        name: 'h264',
+        clockRate: 90000
+        // payloadType: 123,
+        // parameters: {
+        //  packetizationMode: 1
+        // }
       }
     ],
-    peerTransport: {
-      udp: true,
-      tcp: true
-    },
+    // peerTransport: {
+    //  udp: true,
+    //  tcp: true
+    // },
     maxBitrate: 500000
   }
 }
