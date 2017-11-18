@@ -6,7 +6,7 @@ var { check, validationResult } = require('express-validator/check')
 instanceRouter.route('/instances')
   .get(InstanceManager.getInstances)
   .post([
-    check('instance_name').exists().withMessage('Name must specified'),
+    check('instance_name').exists().withMessage('Name must specified').matches('(?:[a-z0-9_]+|[a-z0-9_][a-z0-9-_]+[a-z0-9_])'),
     check('vision_tool').exists().withMessage('Vision tool must be specified'),
     check('chatbot').exists().withMessage('Specifiy chatbot')
   ], InstanceManager.createInstance)
