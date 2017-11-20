@@ -58,7 +58,7 @@ module.exports = {
       },
       {
         kind: 'video',
-        name: 'h264',
+        name: 'VP8',
         clockRate: 90000
         // payloadType: 123,
         // parameters: {
