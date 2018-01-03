@@ -42,6 +42,12 @@ class Room extends EventEmitter {
     this._currentActiveSpeaker = null
 
     this._handleMediaRoom()
+
+    // this would hold the peers and create appropriate rtpStreamer for each of this, 
+    // the format would be: 
+    // peer_name: true -> if we have already created peer. This requires that we 
+    // create a whole lot more free ports in due time. 
+    this.peers = []
   }
 
   get id () {
@@ -249,12 +255,25 @@ class Room extends EventEmitter {
       this._handleMediaTransport(transport)
     })
 
-    mediaPeer.on('newrtpreceiver', (rtpReceiver) => {
-      this.emit('new-stream', rtpReceiver, this._roomId)
-    })
+    // TODO this has been removed and replace as it doesn't work
+    // mediaPeer.on('newrtpreceiver', (rtpReceiver) => {
+    //   this.emit('new-stream', rtpReceiver, this._roomId)
+    // })
 
     mediaPeer.on('newproducer', (producer) => {
       logger.info('mediaPeer "newproducer" event [id:%s]', producer.id)
+
+      // if this doesn't exist for each both
+      // creates for both this value, now for both audio and video. If it has only then okay. 
+      this._rtpStreamStart(producer, mediaPeer)
+      let typ = this.peers[mediaPeer.name]
+      if (!typ) {
+        typ = []
+      }
+      typ[String(producer.kind)] = 'true'
+      this.peers[mediaPeer.name] = typ
+      logger.info('peers')
+      logger.info(this.peers)
 
       this._handleMediaProducer(producer)
     })
@@ -453,6 +472,28 @@ class Room extends EventEmitter {
       numPeers,
       Math.round(previousMaxBitrate / 1000),
       Math.round(newMaxBitrate / 1000))
+  }
+  _rtpStreamStart (producer, mediaPeer) {
+    let rtpStream
+    if (producer.kind === 'video') {
+      rtpStream = this._mediaRoom.createRtpStreamer(producer, config.mediasoup.rtpConfig.video)
+      logger.info(config.mediasoup.rtpConfig.video)
+    } else {
+      rtpStream = this._mediaRoom.createRtpStreamer(producer, config.mediasoup.rtpConfig.audio)
+      logger.info(config.mediasoup.rtpConfig.audio)
+    }
+    rtpStream.then((rtpStreamer) => {
+      logger.info(producer.kind)
+      logger.info('transport id %s', rtpStreamer.transport.id)
+      logger.info('transport tuple')
+      logger.info(rtpStreamer.transport.tuple)
+      logger.info('transport open or closed')
+      logger.info(rtpStreamer.transport.closed)
+      logger.info('==========================consumer rtpParameters')
+      logger.info(rtpStreamer.consumer.rtpParameters)
+      logger.info('xxxxxxxxxxxxxxxxxxxxxxxxxxconsumer rtpParameters')
+    })
+      .on('close', () => { logger.info('***********-------- closed') })
   }
 }
 

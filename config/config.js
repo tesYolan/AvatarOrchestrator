@@ -46,6 +46,17 @@ module.exports = {
     rtcAnnouncedIPv6: null,
     rtcMinPort: 40000,
     rtcMaxPort: 49999,
+    rtpConfig:
+      {
+        audio: {
+          remoteIP: '192.168.1.38',
+          remotePort: 5002
+        },
+        video: {
+          remoteIP: '192.168.1.38',
+          remotePort: 5005
+        }
+      },
     mediaCodecs: [
       {
         kind: 'audio',
@@ -53,23 +64,30 @@ module.exports = {
         clockRate: 48000,
         channels: 2,
         parameters: {
-          useInbandFec: 1
+          useinbandfec: 1
         }
       },
+      // {
+      //  kind: 'video',
+      //  name: 'VP8',
+      //  clockRate: 90000
+      // },
       {
         kind: 'video',
-        name: 'VP8',
-        clockRate: 90000
+        name: 'H264',
+        clockRate: 90000,
         // payloadType: 123,
-        // parameters: {
-        //  packetizationMode: 1
-        // }
+        parameters: {
+          'packetization-mode': 1,
+          'profile-level-id': '42e01f',
+          'level-asymmetry-allowed': 1
+        }
       }
     ],
-    // peerTransport: {
+    // peertransport: {
     //  udp: true,
     //  tcp: true
     // },
-    maxBitrate: 500000
+    maxbitrate: 500000
   }
 }

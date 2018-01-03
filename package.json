@@ -7,7 +7,7 @@
     "postinstall": "concurrently \"npm run install_client\" \"npm run install_admin\"",
     "install_client": "cd mediasoup-demo/app && npm install",
     "install_admin": "cd Talk-To-Sophia-Admin && npm install",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start-server": "nodemon app.js",
     "run-display": "python py-app/misc.py",
     "start-admin": "cd Talk-To-Sophia-Admin && npm start",
@@ -53,7 +53,6 @@
     "grunt-contrib-nodeunit": "~0.4.1",
     "grunt-contrib-watch": "~0.6.1",
     "grunt-jsdoc": "^2.1.0",
-    "jest": "^20.0.4",
     "nodemon": "^1.11.0",
     "standard": "^10.0.2"
   },
