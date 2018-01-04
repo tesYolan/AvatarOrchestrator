@@ -94,4 +94,5 @@ systemctl status nginx.service
 * Detailed documentation to follow, in the meantime jsdoc enabled doc can be built by invoking
     grunt jsdoc
 * Make Misc.py work with the configuration as defined in the [config file](https://github.com/tesYolan/Restforhead/blob/master/config/config.js) file.
-* There are a lot of configuration files to be edited and dependecies that need to be installed, if possible creating a script to handle such events would be necessary.
+* More comperhensive test. Currently their are tests to check validity of routes and their respective functionalities. 
+    npm test # to run tests.
