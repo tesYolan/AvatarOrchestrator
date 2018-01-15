@@ -56,6 +56,9 @@ class Misc:
         del self.process[instance_name]
         return True
 
+    def get_port(self,name): 
+        return self.get_free_ports(1)
+
     def get_free_ports(self,number_of_ports):
         ports = []
         all_ports = [item for sublist in self.ports.values() for item in sublist]

@@ -24,3 +24,14 @@ module.exports.createDisplay = function createDisplay (name, numPorts, callback)
 module.exports.stopDisplay = function stopDisplay (name, callback) {
   client.invoke('stop_display', name, callback)
 }
+
+/**
+ * getFreePort  
+ * @param name The name of the instance that we created the port for. 
+ * @param callback A zerorpc callback function with signature funciton(error, res, more). The response contains port in it's response.
+ * @returns {undefined}
+ */
+
+module.exports.getFreePort = function getPort (name, callback) {
+  client.invoke('get_port', name, callback)
+}

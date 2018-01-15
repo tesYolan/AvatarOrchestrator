@@ -1,5 +1,6 @@
 'use strict'
 
+var DisplayManager = require('./display_manager')
 const EventEmitter = require('events').EventEmitter
 const protooServer = require('protoo-server')
 const logger = require('./Logger')
@@ -475,12 +476,20 @@ class Room extends EventEmitter {
   }
   _rtpStreamStart (producer, mediaPeer) {
     let rtpStream
+    var that = this
     if (producer.kind === 'video') {
-      rtpStream = this._mediaRoom.createRtpStreamer(producer, config.mediasoup.rtpConfig.video)
-      logger.info(config.mediasoup.rtpConfig.video)
+      // Here I need to set different people values.
+      DisplayManager.getFreePort('dummy', function getPort (error, port, more) {
+        if (error) logger.error(error)
+        rtpStream = that._mediaRoom.createRtpStreamer(producer, {'remoteIP': config.mediasoup.rtpConfig.video.remoteIP, 'remotePort': port[0]})
+        logger.info({'remoteIP': config.mediasoup.rtpConfig.video.remoteIP, 'remotePort': port})
+      })
     } else {
-      rtpStream = this._mediaRoom.createRtpStreamer(producer, config.mediasoup.rtpConfig.audio)
-      logger.info(config.mediasoup.rtpConfig.audio)
+      DisplayManager.getFreePort('dummy', function getPort (error, port, more) {
+        if (error) logger.error(error)
+        rtpStream = that._mediaRoom.createRtpStreamer(producer, {'remoteIP': config.mediasoup.rtpConfig.audio.remoteIP, 'remotePort': port[0]})
+        logger.info({'remoteIP': config.mediasoup.rtpConfig.audio.remoteIP, 'remotePort': port})
+      })
     }
     rtpStream.then((rtpStreamer) => {
       logger.info(producer.kind)
@@ -489,11 +498,11 @@ class Room extends EventEmitter {
       logger.info(rtpStreamer.transport.tuple)
       logger.info('transport open or closed')
       logger.info(rtpStreamer.transport.closed)
-      logger.info('==========================consumer rtpParameters')
+      logger.info('Consumer rtpParameters')
       logger.info(rtpStreamer.consumer.rtpParameters)
-      logger.info('xxxxxxxxxxxxxxxxxxxxxxxxxxconsumer rtpParameters')
+      logger.info('Consumer rtpParameters')
     })
-      .on('close', () => { logger.info('***********-------- closed') })
+      .on('close', () => { logger.info('closed') })
   }
 }
 
