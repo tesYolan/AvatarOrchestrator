@@ -1,4 +1,6 @@
 # Prerequisite Installation
+## Hanson Pipeline docker container.
+Here, the steps are outlined to setup a docker container with a 
 ## Mongodb
 It's assumed there is a valid mongodb deamon running on the platform. 
 1. Installed mongodb from the following link: [installation script](https://docs.mongodb.com/manual/installation/)
@@ -89,8 +91,13 @@ systemctl status nginx.service
     cd py-app
     pip install -r requirments.txt
 
-
+# Suggestions and Methodlogies Taken
+* nvidia-docker
 # TODO 
+## Important Functionalities that remain. 
+* Better FPS performance of the application. 
+* Better SDP performance when decoding the stream. 
+## Other Goals.
 * Detailed documentation to follow, in the meantime jsdoc enabled doc can be built by invoking
     grunt jsdoc
 * Make Misc.py work with the configuration as defined in the [config file](https://github.com/tesYolan/Restforhead/blob/master/config/config.js) file.

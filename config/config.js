@@ -8,7 +8,7 @@ module.exports = {
   mongodb_ip: 'localhost',
   mongodb_port: '27017',
   docker_ip: '0.0.0.0',
-  docker_image: 'hanson:rpc',
+  docker_image: 'hanson:final_2',
   protoo: {
     listenIp: '192.168.1.38',
     listenPort: 3443
@@ -71,7 +71,7 @@ module.exports = {
       //  kind: 'video',
       //  name: 'VP8',
       //  clockRate: 90000
-      // },
+      // }
       {
         kind: 'video',
         name: 'H264',
@@ -80,7 +80,8 @@ module.exports = {
         parameters: {
           'packetization-mode': 1,
           'profile-level-id': '42e01f',
-          'level-asymmetry-allowed': 1
+          'level-asymmetry-allowed': 1,
+          'sprop-parameter-sets': 'Z0IAKeNQFAe2AtwEBAaQeJEV,aM48gA=='
         }
       }
     ],

@@ -49,7 +49,7 @@ module.exports.createInstance = function createInstance (req, res, next) {
           '10001': [{ 'HostPort': String(display[1][2]) }], // FOR WHAT?
           '9090': [{ 'HostPort': String(display[1][3]) }], // FOR WEBSOCKET ROS -> IS THIS NEEDED
           '4242': [{ 'HostPort': String(display[1][4]) }], // FOR RPC commands in the containers
-          '5999': [{ 'HostPort': String(display[1][5]) }] // FOR RTSP 
+          '5999': [{ 'HostPort': String(display[1][5]) }] // DEPRECEATED FOR RTSP
         },
         'Binds': [ '/tmp/.X11-unix:/tmp/.X11-unix:rw' ],
         'Privileged': true

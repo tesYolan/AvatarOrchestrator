@@ -475,34 +475,48 @@ class Room extends EventEmitter {
       Math.round(newMaxBitrate / 1000))
   }
   _rtpStreamStart (producer, mediaPeer) {
-    let rtpStream
     var that = this
     if (producer.kind === 'video') {
       // Here I need to set different people values.
-      DisplayManager.getFreePort('dummy', function getPort (error, port, more) {
+      DisplayManager.getFreePort('dummy', (error, port, more) => {
         if (error) logger.error(error)
-        rtpStream = that._mediaRoom.createRtpStreamer(producer, {'remoteIP': config.mediasoup.rtpConfig.video.remoteIP, 'remotePort': port[0]})
+        that._mediaRoom.createRtpStreamer(producer, {'remoteIP': config.mediasoup.rtpConfig.video.remoteIP, 'remotePort': port[0]}).then((rtpStreamer) => {
+          logger.info(producer.kind)
+          logger.info('transport id %s', rtpStreamer.transport.id)
+          logger.info('transport tuple')
+          logger.info(rtpStreamer.transport.tuple)
+          logger.info('transport open or closed')
+          logger.info(rtpStreamer.transport.closed)
+          logger.info('Consumer rtpParameters')
+          // Pass this to the docker container.
+          // TODO call rpc manager soon with SDP session codecs
+          logger.info(rtpStreamer.consumer.rtpParameters.codecs)
+          // with this build a sdp parameter
+          logger.info('Consumer rtpParameters')
+        })
+        // .on('close', () => { logger.info('closed') })
         logger.info({'remoteIP': config.mediasoup.rtpConfig.video.remoteIP, 'remotePort': port})
       })
     } else {
-      DisplayManager.getFreePort('dummy', function getPort (error, port, more) {
+      DisplayManager.getFreePort('dummy', (error, port, more) => {
         if (error) logger.error(error)
-        rtpStream = that._mediaRoom.createRtpStreamer(producer, {'remoteIP': config.mediasoup.rtpConfig.audio.remoteIP, 'remotePort': port[0]})
+        that._mediaRoom.createRtpStreamer(producer, {'remoteIP': config.mediasoup.rtpConfig.audio.remoteIP, 'remotePort': port[0]}).then((rtpStreamer) => {
+          logger.info(producer.kind)
+          logger.info('transport id %s', rtpStreamer.transport.id)
+          logger.info('transport tuple')
+          logger.info(rtpStreamer.transport.tuple)
+          logger.info('transport open or closed')
+          logger.info(rtpStreamer.transport.closed)
+          logger.info('Consumer rtpParameters')
+          // pass this to the docker container
+          // TODO call rpc manager with SDP session codecs.
+          logger.info(rtpStreamer.consumer.rtpParameters.codecs)
+          logger.info('Consumer rtpParameters')
+        })
+        // .on('close', () => { logger.info('closed') })
         logger.info({'remoteIP': config.mediasoup.rtpConfig.audio.remoteIP, 'remotePort': port})
       })
     }
-    rtpStream.then((rtpStreamer) => {
-      logger.info(producer.kind)
-      logger.info('transport id %s', rtpStreamer.transport.id)
-      logger.info('transport tuple')
-      logger.info(rtpStreamer.transport.tuple)
-      logger.info('transport open or closed')
-      logger.info(rtpStreamer.transport.closed)
-      logger.info('Consumer rtpParameters')
-      logger.info(rtpStreamer.consumer.rtpParameters)
-      logger.info('Consumer rtpParameters')
-    })
-      .on('close', () => { logger.info('closed') })
   }
 }
 

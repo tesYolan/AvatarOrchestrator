@@ -28,3 +28,14 @@ module.exports.stopSession = function stopSession (name, numPort, callback) {
   client.connect('tcp://' + config.docker_ip + ':' + numPort)
   client.invoke('delete_session', {'instance_name': name}, callback)
 }
+
+/**
+ * sdpSession - transmitts the sdp configuration
+ * @param name - the type of the parameter that is either audio or video
+ * @param numPort - the port at which it is listening from host perspective in docker sense.? 
+ * @param callback - callback with information about the invocation.
+ */
+module.exports.sdpSession = function sdpSession (type, numPort, callback) {
+  client.connect('tcp://' + config.docker_ip + ':' + numPort)
+  client.invoke('sdp_description', {'mediaType': type}, callback)
+}
