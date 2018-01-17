@@ -1,6 +1,13 @@
 # Prerequisite Installation
 ## Hanson Pipeline docker container.
-Here, the steps are outlined to setup a docker container with a 
+Here, the steps are outlined to setup a docker container using a hrtool [hrtool](https://github.com/hansonrobotics/hrtool)
+* Build with hrtool in docker container. 
+* Run the container and utilize the following steps for enabling RPC in docker container. (This work hasn't been merged in the pipeline yet).
+    # go to hr_launchpad 
+    git pull remote git@github.com:tesYolan/hr_launchpad.git
+    git checkout remote master
+* In addition to that docker builder need to bundle [virtualgl](https://virtualgl.org/vgldoc/2_2_1/#hd004001) in the docker image. 
+* If utilizing nvidia-docker one needs to link X path's of the host to docker image as nvidia-docker has yet to connect them both.
 ## Mongodb
 It's assumed there is a valid mongodb deamon running on the platform. 
 1. Installed mongodb from the following link: [installation script](https://docs.mongodb.com/manual/installation/)
@@ -91,9 +98,6 @@ systemctl status nginx.service
     cd py-app
     pip install -r requirments.txt
 
-# Suggestions and Methodlogies Taken
-* nvidia-docker
-# TODO 
 ## Important Functionalities that remain. 
 * Better FPS performance of the application. 
 * Better SDP performance when decoding the stream. 
