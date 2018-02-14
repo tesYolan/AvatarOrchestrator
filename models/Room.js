@@ -256,11 +256,6 @@ class Room extends EventEmitter {
       this._handleMediaTransport(transport)
     })
 
-    // TODO this has been removed and replace as it doesn't work
-    // mediaPeer.on('newrtpreceiver', (rtpReceiver) => {
-    //   this.emit('new-stream', rtpReceiver, this._roomId)
-    // })
-
     mediaPeer.on('newproducer', (producer) => {
       logger.info('mediaPeer "newproducer" event [id:%s]', producer.id)
 

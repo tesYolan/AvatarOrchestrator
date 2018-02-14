@@ -10,18 +10,18 @@ module.exports = {
   docker_ip: '0.0.0.0',
   docker_image: 'hanson:final_2',
   protoo: {
-    listenIp: '192.168.1.38',
+    listenIp: '0.0.0.0',
     listenPort: 3443
   },
   http: {
     listenPort: 3011
   },
   rtmpServer: {
-    listenIp: '192.168.1.38',
+    listenIp: 'localhost',
     listenPort: '5442'
   },
   rtspServer: {
-    listenIp: '192.168.1.38',
+    listenIp: 'localhost',
     listenPort: 5000
   },
   resolution: {
@@ -29,7 +29,7 @@ module.exports = {
     height: '768'
   },
   mediasoup: {
-    logLevel: 'debug',
+    logLevel: 'warn',
     logTags: [
       'info',
       'ice',
@@ -49,11 +49,11 @@ module.exports = {
     rtpConfig:
       {
         audio: {
-          remoteIP: '192.168.1.38',
+          remoteIP: 'localhost',
           remotePort: 5002
         },
         video: {
-          remoteIP: '192.168.1.38',
+          remoteIP: 'localhost',
           remotePort: 5005
         }
       },
