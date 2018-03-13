@@ -8,7 +8,7 @@ module.exports = {
   mongodb_ip: 'localhost',
   mongodb_port: '27017',
   docker_ip: '0.0.0.0',
-  docker_image: 'hanson:final_2',
+  docker_image: 'hanson:latest',
   protoo: {
     listenIp: '0.0.0.0',
     listenPort: 3443

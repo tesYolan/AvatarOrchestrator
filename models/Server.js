@@ -24,7 +24,7 @@ class Server extends EventEmitter {
   constructor () {
     super()
     this.rooms = new Map()
-    process.env.DEBUG = config.debug || '*LOG* *WARN* *DEBUG* *ERROR*'
+    // process.env.DEBUG = config.debug || '*LOG* *WARN* *DEBUG* *ERROR*'
   }
 
   setWebServer (webServer) {
