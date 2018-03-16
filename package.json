@@ -27,7 +27,6 @@
     "express": "^4.15.2",
     "express-validator": "^4.2.1",
     "mediasoup": "^2.0.3",
-    "mediasoup-server": "git+https://github.com/tesYolan/mediasoup-server.git",
     "mocha": "^3.3.0",
     "mongoose": "^4.9.9",
     "morgan": "^1.8.1",
