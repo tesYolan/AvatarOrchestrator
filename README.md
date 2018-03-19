@@ -3,9 +3,11 @@
 Here, the steps are outlined to setup a docker container using a hrtool [hrtool](https://github.com/hansonrobotics/hrtool)
 * Build with hrtool in docker container. 
 * Run the container and utilize the following steps for enabling RPC in docker container. (This work hasn't been merged in the pipeline yet).
+```
     # go to hr_launchpad 
     git pull remote git@github.com:tesYolan/hr_launchpad.git
     git checkout remote master
+```
 * In addition to that docker builder need to bundle [virtualgl](https://virtualgl.org/vgldoc/2_2_1/#hd004001) in the docker image. 
 * If utilizing nvidia-docker one needs to link X path's of the host to docker image as nvidia-docker has yet to connect them both.
 ## Mongodb
