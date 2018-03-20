@@ -22,7 +22,8 @@ class Misc:
             if distutils.spawn.find_executable('ffmpeg'):
                 self.FFMPEG = 'ffmpeg'
             else:
-                raise Exception('FFMPEG executable not found')
+                pass
+                #raise Exception('FFMPEG executable not found')
         #self.FFMPEG = 'ffmpeg'
         self.STREAM_LOC = '../stream/'
 

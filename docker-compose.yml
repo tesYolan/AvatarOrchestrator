@@ -1,0 +1,16 @@
+version: "2"
+services:
+  node:
+    build: .
+    image: "node8:p"
+    user: "node"
+    working_dir: /home/node/app
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./:/home/node/app
+    expose:
+      - "8081"
+      - "3000"
+      - "3002"
+    command: "npm run deploy"
