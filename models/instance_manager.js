@@ -30,11 +30,11 @@ module.exports.createInstance = function createInstance (req, res, next) {
   if (!errors.isEmpty()) {
     return res.status(422).json({errors: errors.mapped()})
   }
-  DisplayManager.createDisplay(req.body.instance_name, 9, function createNewInstance (error, display, more) {
+  DisplayManager.createDisplay(req.body.instance_name, 8, function createNewInstance (error, display, more) {
     if (error) return next(String(error))
     logger.info(display[0])
     docker.createContainer({
-      Image: config.docker_image,
+      Image: config.docker.image,
       // AttachStdin: true,
       AttachStdout: true,
       AttachStderr: true,
@@ -43,7 +43,7 @@ module.exports.createInstance = function createInstance (req, res, next) {
       Env: ['DISPLAY=:1', 'QT_X11_NO_MITSHM=1'],
       // Env: ['DISPLAY=:' + String(display[0]), 'QT_X11_NO_MITSHM=1', 'VGL_DISPLAY=:' + String(display[0])],
       ExposedPorts: { '4000': {}, '8000': {}, '10001': {}, '9090': {}, '4242': {}, '5999': {} },
-      Volumes: { '/tmp/.X11-unix': {}, '/home/hansondev/hansonrobotics/HEAD/src/sophia_blender_lfs': {}, '/home/hansondev/hansonrobotics/hr_launchpad': {} },
+      Volumes: { '/tmp/.X11-unix': {} },
       HostConfig: {
         'PortBindings': {
           '4000': [{ 'HostPort': String(display[1][0]) }], // FOR HTTPS request
@@ -51,12 +51,11 @@ module.exports.createInstance = function createInstance (req, res, next) {
           '10001': [{ 'HostPort': String(display[1][2]) }], // FOR WHAT?
           '9090': [{ 'HostPort': String(display[1][3]) }], // FOR WEBSOCKET ROS -> IS THIS NEEDED
           '4242': [{ 'HostPort': String(display[1][4]) }], // FOR RPC commands in the containers
-          '5999': [{ 'HostPort': String(display[1][5]) }], // DEPRECEATED FOR RTSP
-          '11311': [{ 'HostPort': String(display[1][6]) }], // FOR rosbridge?
-          '9094': [{ 'HostPort': String(display[1][7]) }], // FOR websocket
-          '8004': [{ 'HostPort': String(display[1][8]) }] // FOR Chatbot
+          '11311': [{ 'HostPort': String(display[1][5]) }], // FOR rosbridge?
+          '9094': [{ 'HostPort': String(display[1][6]) }], // FOR websocket
+          '8004': [{ 'HostPort': String(display[1][7]) }] // FOR Chatbot
         },
-        'Binds': [ '/tmp/.X11-unix:/tmp/.X11-unix:rw', '/home/tesfa/clone_dir/sophia_blender_lfs:/home/hansondev/hansonrobotics/HEAD/src/sophia_blender_lfs', '/home/tesfa/clone_dir/hr_launchpad:/home/hansondev/hansonrobotics/hr_launchpad' ],
+        'Binds': [ '/tmp/.X11-unix:/tmp/.X11-unix:rw' ],
         'Privileged': true
         // "Devices": ["/dev/snd","/dev/snd"]
       },
@@ -92,8 +91,8 @@ module.exports.createInstance = function createInstance (req, res, next) {
           port_web_socket: display[1][2],
           dummy: display[1][3],
           display: display[0],
-          RPC: display[1][4],
-          RTSP: display[1][5]
+          RPC: display[1][4]
+          // TODO add commands
         }
         ]
 

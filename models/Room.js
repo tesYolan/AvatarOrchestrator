@@ -489,7 +489,7 @@ class Room extends EventEmitter {
           // with this build a sdp parameter
           logger.info('Consumer rtpParameters')
         })
-        // .on('close', () => { logger.info('closed') })
+        // TODO Connect it with the underlying connection.
         logger.info({'remoteIP': config.mediasoup.rtpConfig.video.remoteIP, 'remotePort': port})
       })
     } else {

@@ -1,7 +1,7 @@
 var mongoose = require('mongoose')
 var config = require('./config/config')
 var logger = require('./models/Logger')
-var url = 'mongodb://' + config.mongodb_ip + ':' + config.mongodb_port + '/instances'
+var url = 'mongodb://' + config.mongo.listenIp + ':' + config.mongo.listenPort + '/instances'
 var Server = require('./models/Server')
 process.title = 'rest_for_head'
 mongoose.Promise = global.Promise

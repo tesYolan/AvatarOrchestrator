@@ -1,12 +1,10 @@
-# Prerequisite Installation
-## Hanson Pipeline docker container.
-Here, the steps are outlined to setup a docker container using a hrtool [hrtool](https://github.com/hansonrobotics/hrtool)
-* Build with hrtool in docker container. 
-* Run the container and utilize the following steps for enabling RPC in docker container. (This work hasn't been merged in the pipeline yet).
+# Easy Installation
 ```
-    # go to hr_launchpad 
-    git pull remote git@github.com:tesYolan/hr_launchpad.git
-    git checkout remote master
+git clone --recursive-modules https://github.com/tesyolan/Restforhead.git
+docker-compose up
+```
+# Manaual Installation
+## Hanson Pipeline docker container.
 ```
 * In addition to that docker builder need to bundle [virtualgl](https://virtualgl.org/vgldoc/2_2_1/#hd004001) in the docker image. 
 * If utilizing nvidia-docker one needs to link X path's of the host to docker image as nvidia-docker has yet to connect them both.
@@ -17,7 +15,7 @@ It's assumed there is a valid mongodb deamon running on the platform.
 ..1 If you desire to change the port location.
 3. Set the mongodb configuration in the configuration file to the mongodb location. [configuration file](https://github.com/tesYolan/Restforhead/blob/master/config/config.js#L8)
 
-## FFMPEG
+## FFMPEG for evaluating Xvfb stream options.
 Since we do screen casting it's necessary the `FFMPEG` environmental variable points to a valid ffmpeg executable. For instance one can actually do the following to setup static build to be used. Note, as long as the ``FFMPEG`` is set to ffmpeg executable or ffmpeg is path , you don't need to setup using the following way.
 ```
 cd ~/
@@ -77,15 +75,11 @@ sudo service nginx start
 * Besure to create the respective folders detailed in the rtmp section.
 * If errors come up when starting the service diagnose with:
 ```
-systemctl status nginx.service 
+systemctl status nginx.service # or relevant commands
 ```
 
 # Configuration
 ## IP configuration
-* Set protoo IP configuration
-..* Set IP and port configuration to listen to SIP calls. Values are [link](https://github.com/tesYolan/Restforhead/blob/master/config/config.js#L11)
-* rstpServer configuration
-..* Port where to publish the RSTP server [configure](https://github.com/tesYolan/Restforhead/blob/master/config/config.js#L18)
 * Change [http port](https://github.com/tesYolan/Restforhead/blob/master/config/config.js#L15) to direct the API calls.
 ## Docker Configuration
 

@@ -1,32 +1,38 @@
 module.exports = {
   debug: '*LOG* *WARN* *ERROR* *mediasoup-worker*',
-  domain: 'localhost',
+  domain: process.env.DOMAIN,
   tls: {
     cert: `${__dirname}/mediasoup-demo.localhost.cert.pem`,
     key: `${__dirname}/mediasoup-demo.localhost.key.pem`
   },
-  mongodb_ip: 'localhost',
-  mongodb_port: '27017',
-  docker_ip: '0.0.0.0',
-  docker_image: 'hanson:latest',
+  mongo: {
+    listenIp: process.env.MONGO_IP,
+    listenPort: process.env.MONGO_PORT
+  },
+  docker: {
+    listenIp: process.env.DOCKER_IP,
+    image: process.env.DOCKER_IMAGE
+  },
+  stream:
+  {
+    listenIp: process.env.STREAM_IP,
+    listenPort: process.env.STREAM_PORT
+  },
   protoo: {
-    listenIp: '0.0.0.0',
-    listenPort: 3443
+    listenIp: process.env.PROTOO_IP,
+    listenPort: process.env.PROTOO_PORT
   },
   http: {
-    listenPort: 3011
+    listenIp: process.env.HTTP_IP,
+    listenPort: process.env.HTTP_PORT
   },
   rtmpServer: {
-    listenIp: 'localhost',
-    listenPort: '5442'
-  },
-  rtspServer: {
-    listenIp: 'localhost',
-    listenPort: 5000
+    listenIp: process.env.RTMP_IP,
+    listenPort: process.env.RTMP_PORT
   },
   resolution: {
-    width: '1366',
-    height: '768'
+    width: process.env.RESOLUTION_WIDTH,
+    height: process.env.RESOLUTION_HEIGHT
   },
   mediasoup: {
     logLevel: 'warn',
@@ -48,13 +54,14 @@ module.exports = {
     rtcMaxPort: 49999,
     rtpConfig:
       {
+        // This needs to be overloaded for new instances
         audio: {
-          remoteIP: 'localhost',
-          remotePort: 5002
+          remoteIP: process.env.RTP_AUDIO_IP,
+          remotePort: process.env.RTP_AUDIO_PORT
         },
         video: {
-          remoteIP: 'localhost',
-          remotePort: 5005
+          remoteIP: process.env.RTP_VIDEO_IP,
+          remotePort: process.env.RTP_VIDEO_PORT
         }
       },
     mediaCodecs: [
