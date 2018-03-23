@@ -7,8 +7,8 @@ services:
     working_dir: /home/node/app
     environment:
       - NODE_ENV=production
-    volumes:
-      - ./:/home/node/app
+        #volumes:
+        #- ./:/home/node/app
     expose:
       - "8081"
       - "3000"
@@ -24,8 +24,8 @@ services:
     environment:
       - MONGO_DATA_DIR=/data/db
       - MONGO_LOG_DIR=/dev/null
-    volumes:
-      - ./data/db:/data/db
+        #volumes:
+        #- ./data/db:/data/db
     ports:
         - 27017:27017
     command: mongod --smallfiles --logpath=/dev/null # --quiet
