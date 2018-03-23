@@ -1,31 +1,56 @@
 version: "2"
 services:
-  node:
-    build: .
-    image: "node8:p"
-    user: "node"
-    working_dir: /home/node/app
-    environment:
-      - NODE_ENV=production
-        #volumes:
-        #- ./:/home/node/app
-    expose:
-      - "8081"
-      - "3000"
-      - "3002"
-    command: "npm run deploy"
-    links:
-        - mongodb
-    depends_on:
-        - mongodb
-  mongodb:
-    image: mongo:latest
-    container_name: "mongodb"
-    environment:
-      - MONGO_DATA_DIR=/data/db
-      - MONGO_LOG_DIR=/dev/null
-        #volumes:
-        #- ./data/db:/data/db
-    ports:
-        - 27017:27017
-    command: mongod --smallfiles --logpath=/dev/null # --quiet
+    node:
+        image: "node8:p"
+        working_dir: /home/node/app
+        user: node
+        #environment:
+        #    - NODE_ENV=production
+        volumes:
+            - ./:/home/node/app:rw
+            - /home/node/app/node_modules
+        expose:
+            - "8080"
+            - "3000"
+            - "3002"
+        command: "npm run deploy"
+        environment:
+            - DOCKER_IP=localhost 
+            - DOCKER_IMAGE=hanson:latest
+            - STREAM_IP=localhost
+            - STREAM_PORT=5443
+            - PROTOO_IP=0.0.0.0
+            - PROTOO_PORT=3443
+            - HTTP_IP=localhost
+            - HTTP_PORT=3011
+            - RTMP_IP=localhost
+            - RTMP_PORT=5442
+            - RESOLUTION_WIDTH=1366
+            - RESOLUTION_HEIGHT=768
+            - RTP_AUDIO_IP=localhost
+            - RTP_AUDIO_PORT=5002
+            - RTP_VIDEO_IP=localhost
+            - RTP_VIDEO_PORT=5005
+        links:
+            - mongodb
+        depends_on:
+            - mongodb
+    mongodb:
+        image: mongo:latest
+        container_name: "mongodb"
+        environment:
+            - MONGO_DATA_DIR=/data/db
+            - MONGO_LOG_DIR=/dev/null
+              #volumes:
+              #- ./data/db:/data/db
+        ports:
+            - 27017:27017
+        command: mongod --smallfiles --logpath=/dev/null # --quiet
+    nginx:
+        image: nginx:latest
+        container_name: "nginx_hoster"
+        volumes_from: 
+        - node
+        ports: 
+        - 5442:5442
+        - 5443:5443

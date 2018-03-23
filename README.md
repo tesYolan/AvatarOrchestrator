@@ -1,11 +1,11 @@
 # Easy Installation
 ```
 git clone --recursive-modules https://github.com/tesyolan/Restforhead.git
+./build.sh
 docker-compose up
 ```
 # Manaual Installation
 ## Hanson Pipeline docker container.
-```
 * In addition to that docker builder need to bundle [virtualgl](https://virtualgl.org/vgldoc/2_2_1/#hd004001) in the docker image. 
 * If utilizing nvidia-docker one needs to link X path's of the host to docker image as nvidia-docker has yet to connect them both.
 ## Mongodb
