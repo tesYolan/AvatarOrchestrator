@@ -1,7 +1,7 @@
 version: "2"
 services:
     node:
-        image: "node8:p"
+        image: "node:app"
         working_dir: /home/node/app
         user: node
         #environment:
