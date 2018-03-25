@@ -13,7 +13,7 @@ var logger = new (winston.Logger)({
   ]
 })
 logger.level = 'debug' || 'info' || 'log'
-var docker = new Docker()
+var docker = new Docker({socketPath: '/var/run/docker.sock'})
 
 /**
  * createInstance code to create instance. The creates creates and starts the instance. 
