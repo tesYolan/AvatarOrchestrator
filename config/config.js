@@ -2,8 +2,8 @@ module.exports = {
   debug: '*LOG* *WARN* *ERROR* *mediasoup-worker*',
   domain: process.env.DOMAIN,
   tls: {
-    cert: `${__dirname}/mediasoup-demo.localhost.cert.pem`,
-    key: `${__dirname}/mediasoup-demo.localhost.key.pem`
+    cert: `${__dirname}/certs/mediasoup-demo.localhost.cert.pem`,
+    key: `${__dirname}/certs/mediasoup-demo.localhost.key.pem`
   },
   mongo: {
     listenIp: process.env.MONGO_IP,
