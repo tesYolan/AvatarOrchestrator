@@ -9,13 +9,13 @@ import distutils.spawn
 class Misc: 
     def __init__(self): 
         self.displays = {} # Make this dictionary. Yes, that makes much more sense.
-        self.width = 1366
-        self.height = 768
+        self.width = os.environ['RESOLUTION_WIDTH']
+        self.height = os.environ['RESOLUTION_HEIGHT']
         self.colordepth = 24
         self.ports = {}
         self.process = {}
         self.stream = 'rtmp' # hls or rtsp or rtmp or hls_http
-        self.resolution = '1360x768'
+        self.resolution = str(os.environ['RESOLUTION_WIDTH'])+'x'+ str(os.environ['RESOLUTION_HEIGHT'])
         try:
             self.FFMPEG = os.environ['FFMPEG']
         except KeyError:
@@ -27,15 +27,13 @@ class Misc:
         #self.FFMPEG = 'ffmpeg'
         self.STREAM_LOC = '../stream/'
 
-        self.RTMP_IP = 'localhost'
-        self.RTSP_IP = 'localhost'
-        self.HTTP_IP = 'localhost'
-        self.HTTPS_IP = 'localhost'
+        self.RTMP_IP = os.environ['RTMP_IP']
+        self.HTTP_IP = os.environ['HTTP_IP']
+        self.HTTPS_IP = os.environ['HTTPS_IP']
 
-        self.RTMP_PORT = '5442'
-        self.RTSP_PORT = '8099'
-        self.HTTP_PORT = '8090'
-        self.HTTPS_PORT = '5443'
+        self.RTMP_PORT = os.environ['RTMP_IP']
+        self.HTTP_PORT = os.environ['HTTP_PORT']
+        self.HTTPS_PORT = os.environ['HTTPS_PORT']
 
         self.LOG_LEVEL = 'error' # possible commands, quiet, panic, fatal, error, warning, info...
 
@@ -78,10 +76,7 @@ class Misc:
         display_record = ':' + str(self.displays[instance_name].new_display)
         # Command to change to process command. 
         # ffmpeg -f alsa -i default -f x11grab -s 1366x768 -r 30 -i :0.0 -sameq filename.avi
-        if self.stream == 'rtsp': 
-            print('rtsp streaming setup')
-            self.process[instance_name] = subprocess.Popen([self.FFMPEG,'-loglevel',self.LOG_LEVEL,'-f','x11grab','-s',self.resolution,'-probesize','10M','-i',display_record,'-c:v','h264','-preset','ultrafast','-pix_fmt','yuv420p','-crf','0','-f','rtsp','-rtsp_transport','tcp','rtsp://' + self.RTSP_IP + ':' + self.RTSP_PORT + '/live/'+str(instance_name)])
-        elif self.stream == 'hls':
+        if self.stream == 'hls':
             print('hls to file setup')
             self.process[instance_name] = subprocess.Popen([self.FFMPEG,'-loglevel',self.LOG_LEVEL,'-f','x11grab','-s',self.resolution,'-probesize','10M','-i',display_record,'-c:v','h264','-preset','ultrafast','-pix_fmt','yuv420p','-crf','0','-f','hls',self.STREAM_LOC+str(instance_name)+'.m3u8'])
         elif self.stream == 'hls_http':
@@ -94,5 +89,6 @@ class Misc:
         return True
 
 s = zerorpc.Server(Misc())
-s.bind("tcp://0.0.0.0:3111")
+rpc_port = "tcp://" + str(os.environ['RPC_IP'])+":"+str(os.environ['RPC_PORT'])
+s.bind(rpc_port)
 s.run()

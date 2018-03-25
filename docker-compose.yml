@@ -22,11 +22,15 @@ services:
             - PROTOO_IP=0.0.0.0
             - PROTOO_PORT=3443
             - HTTP_IP=localhost
+            - HTTPS_IP=localhost
             - HTTP_PORT=3011
+            - HTTPS_PORT=7000
             - RTMP_IP=localhost
             - RTMP_PORT=5442
             - RESOLUTION_WIDTH=1366
             - RESOLUTION_HEIGHT=768
+            - RPC_IP=0.0.0.0
+            - RPC_PORT=3111
             - RTP_AUDIO_IP=localhost
             - RTP_AUDIO_PORT=5002
             - RTP_VIDEO_IP=localhost
