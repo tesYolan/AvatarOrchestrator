@@ -1,4 +1,5 @@
 # Easy Installation
+Besure to have [docker](https://docs.docker.com/install/) and [docker-compose](https://docs.docker.com/compose/install/#install-compose) are installed.
 ```
 git clone --recursive-modules https://github.com/tesyolan/Restforhead.git
 ./build.sh
