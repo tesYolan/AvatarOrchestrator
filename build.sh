@@ -4,4 +4,4 @@ cp config/config.js mediasoup-demo/server/
 cp config/config.js mediasoup-demo/app/
 # build dockers
 docker build . -t node:app
-docker build -t nginx:latest -f Dockerfile.nginx 
+docker build -t nginx:latest -f Dockerfile.nginx .
