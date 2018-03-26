@@ -12,6 +12,7 @@ services:
         ports:
             - 3000:3000
             - 3002:3002
+            - 3443:3443
         command: "npm run deploy"
         environment:
             - DOMAIN=localhost
