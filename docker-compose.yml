@@ -9,16 +9,19 @@ services:
         volumes:
             - ./:/home/node/app:rw
             - /home/node/app/node_modules
+            - /var/run/docker.sock:/var/run/docker.sock:rw
+            - /tmp/.X11-unix:/tmp/.X11-unix:rw
         ports:
             - 3000:3000
             - 3002:3002
             - 3443:3443
         command: "npm run deploy"
         environment:
+            - DISPLAY=:0
             - DOMAIN=localhost
             - DOCKER_IP=0.0.0.0 
             - DOCKER_IMAGE=hanson:latest
-            - STREAM_IP=0.0.0.0
+            - STREAM_IP=localhost
             - STREAM_PORT=5443
             - PROTOO_IP=0.0.0.0
             - PROTOO_PORT=3443
