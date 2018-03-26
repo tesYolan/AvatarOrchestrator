@@ -14,7 +14,7 @@ services:
             - 3002:3002
         command: "npm run deploy"
         environment:
-            - DOMAIN=0.0.0.0
+            - DOMAIN=localhost
             - DOCKER_IP=0.0.0.0 
             - DOCKER_IMAGE=hanson:latest
             - STREAM_IP=0.0.0.0
@@ -37,8 +37,10 @@ services:
             - RTP_VIDEO_PORT=5005
         links:
             - mongodb
+            - nginx
         depends_on:
             - mongodb
+            - nginx
     mongodb:
         image: mongo:latest
         container_name: "mongodb"
@@ -53,8 +55,8 @@ services:
     nginx:
         image: nginx:latest
         container_name: "nginx_hoster"
-        volumes_from: 
-        - node
+        volumes:
+            - ./:/home/node/app:rw
         ports: 
         - 5442:5442
         - 5443:5443
