@@ -9,12 +9,12 @@ services:
         volumes:
             - ./:/home/node/app:rw
             - /home/node/app/node_modules
-        expose:
-            - "8080"
-            - "3000"
-            - "3002"
+        ports:
+            - 3000:3000
+            - 3002:3002
         command: "npm run deploy"
         environment:
+            - DOMAIN=0.0.0.0
             - DOCKER_IP=0.0.0.0 
             - DOCKER_IMAGE=hanson:latest
             - STREAM_IP=0.0.0.0
