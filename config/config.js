@@ -11,7 +11,19 @@ module.exports = {
   },
   docker: {
     listenIp: process.env.DOCKER_IP,
-    image: process.env.DOCKER_IMAGE
+    image: process.env.DOCKER_IMAGE,
+    bash: '/bin/sh',
+    script: 'python /home/hansondev/hansonrobotics/hr_launchpad/misc.py',
+    display: '0',
+    http: '4000',
+    https: '8000',
+    websocket: '10001',
+    webbridge: '9090',
+    rpc: '4242',
+    socket: '11311',
+    ros: '9094',
+    chat: '8004',
+    unknown: '5999'
   },
   stream:
   {

@@ -8,9 +8,8 @@ var instanceSetting = mongoose.Schema({
   port: {type: Number, required: true},
   port_web_socket: {type: Number, required: true}, // TODO how can we actually allow the websocet to be changed in the system.
   dummy: {type: Number, required: true}, // TODO how can we actually allow the websocet to be changed in the system.
-  display: {type: Number, required: true},
-  RPC: {type: Number, required: true},
-  RTSP: {type: Number, required: true}
+  display: {type: String, required: true},
+  RPC: {type: Number, required: true}
 })
 var instanceSchema = mongoose.Schema({
   name: { type: String, required: true, unique: true },

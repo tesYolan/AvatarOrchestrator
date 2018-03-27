@@ -32,28 +32,25 @@ module.exports.createInstance = function createInstance (req, res, next) {
   }
   DisplayManager.createDisplay(req.body.instance_name, 8, function createNewInstance (error, display, more) {
     if (error) return next(String(error))
-    logger.info(display[0])
     docker.createContainer({
       Image: config.docker.image,
       // AttachStdin: true,
       AttachStdout: true,
       AttachStderr: true,
-      Entrypoint: ['/bin/sh', '-c', 'python /home/hansondev/hansonrobotics/hr_launchpad/misc.py'],
-      //      Env: ['DISPLAY=:' + String(1.1), 'QT_X11_NO_MITSHM=1', 'VGL_DISPLAY=:' + String(1)],
-      Env: ['DISPLAY=:1', 'QT_X11_NO_MITSHM=1'],
-      // Env: ['DISPLAY=:' + String(display[0]), 'QT_X11_NO_MITSHM=1', 'VGL_DISPLAY=:' + String(display[0])],
-      ExposedPorts: { '4000': {}, '8000': {}, '10001': {}, '9090': {}, '4242': {}, '5999': {} },
+      Entrypoint: [config.docker.bash, '-c', config.docker.script],
+      Env: ['DISPLAY=:' + String(config.docker.display)],
+      ExposedPorts: { [config.docker.http]: {}, [config.docker.https]: {}, [config.docker.websocket]: {}, [config.docker.webbridge]: {}, [config.docker.rpc]: {}, [config.docker.unknown]: {} },
       Volumes: { '/tmp/.X11-unix': {} },
       HostConfig: {
         'PortBindings': {
-          '4000': [{ 'HostPort': String(display[1][0]) }], // FOR HTTPS request
-          '8000': [{ 'HostPort': String(display[1][1]) }], // FOR HTTP request
-          '10001': [{ 'HostPort': String(display[1][2]) }], // FOR WHAT?
-          '9090': [{ 'HostPort': String(display[1][3]) }], // FOR WEBSOCKET ROS -> IS THIS NEEDED
-          '4242': [{ 'HostPort': String(display[1][4]) }], // FOR RPC commands in the containers
-          '11311': [{ 'HostPort': String(display[1][5]) }], // FOR rosbridge?
-          '9094': [{ 'HostPort': String(display[1][6]) }], // FOR websocket
-          '8004': [{ 'HostPort': String(display[1][7]) }] // FOR Chatbot
+          [config.docker.http]: [{ 'HostPort': String(display[1][0]) }],
+          [config.docker.https]: [{ 'HostPort': String(display[1][1]) }],
+          [config.docker.websocket]: [{ 'HostPort': String(display[1][2]) }],
+          [config.docker.webbridge]: [{ 'HostPort': String(display[1][3]) }],
+          [config.docker.rpc]: [{ 'HostPort': String(display[1][4]) }],
+          [config.docker.socket]: [{ 'HostPort': String(display[1][5]) }],
+          [config.docker.ros]: [{ 'HostPort': String(display[1][6]) }],
+          [config.docker.chat]: [{ 'HostPort': String(display[1][7]) }]
         },
         'Binds': [ '/tmp/.X11-unix:/tmp/.X11-unix:rw' ],
         'Privileged': true
