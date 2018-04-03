@@ -13,7 +13,7 @@ module.exports = {
     listenIp: process.env.DOCKER_IP,
     image: process.env.DOCKER_IMAGE,
     bash: '/bin/sh',
-    script: 'python /home/hansondev/hansonrobotics/hr_launchpad/misc.py',
+    script: 'python /root/hansonrobotics/hr_launchpad/misc.py',
     display: '0',
     http: '4000',
     https: '8000',

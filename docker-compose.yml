@@ -20,7 +20,7 @@ services:
             - DISPLAY=:0
             - DOMAIN=localhost
             - DOCKER_IP=0.0.0.0 
-            - DOCKER_IMAGE=hanson:latest
+            - DOCKER_IMAGE=hanson:paper
             - STREAM_IP=localhost
             - STREAM_PORT=5443
             - PROTOO_IP=0.0.0.0
@@ -57,7 +57,7 @@ services:
             - 27017:27017
         command: mongod --smallfiles --logpath=/dev/null # --quiet
     nginx:
-        image: nginx:latest
+        image: nginx:app
         container_name: "nginx_hoster"
         volumes:
             - ./:/home/node/app:rw
