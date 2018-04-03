@@ -6,15 +6,18 @@ services:
         user: node
         #environment:
         #    - NODE_ENV=production
+        #    
+        privileged: true
         volumes:
             - ./:/home/node/app:rw
             - /home/node/app/node_modules
-            - /var/run/docker.sock:/var/run/docker.sock:rw
+            - /var/run/docker.sock:/var/run/docker.sock
             - /tmp/.X11-unix:/tmp/.X11-unix:rw
         ports:
             - 3000:3000
             - 3002:3002
             - 3443:3443
+            - 3011:3011
         command: "npm run deploy"
         environment:
             - DISPLAY=:0
