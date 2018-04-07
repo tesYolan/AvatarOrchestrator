@@ -40,7 +40,7 @@ module.exports.createInstance = function createInstance (req, res, next) {
       Entrypoint: [config.docker.bash, '-c', config.docker.script],
       Env: ['DISPLAY=:' + String(config.docker.display)],
       ExposedPorts: { [config.docker.http]: {}, [config.docker.https]: {}, [config.docker.websocket]: {}, [config.docker.webbridge]: {}, [config.docker.rpc]: {}, [config.docker.unknown]: {} },
-      Volumes: { '/tmp/.X11-unix': {} },
+      Volumes: { '/tmp/.X11-unix': {}, '/root/hansonrobotics/hr_launchpad':{} },
       HostConfig: {
         'PortBindings': {
           [config.docker.http]: [{ 'HostPort': String(display[1][0]) }],
@@ -52,7 +52,7 @@ module.exports.createInstance = function createInstance (req, res, next) {
           [config.docker.ros]: [{ 'HostPort': String(display[1][6]) }],
           [config.docker.chat]: [{ 'HostPort': String(display[1][7]) }]
         },
-        'Binds': [ '/tmp/.X11-unix:/tmp/.X11-unix:rw' ],
+        'Binds': [ '/tmp/.X11-unix:/tmp/.X11-unix:rw', '/home/tesfa/clone_dir/hr_launchpad:/root/hansonrobotics/hr_launchpad' ],
         'Privileged': true
         // "Devices": ["/dev/snd","/dev/snd"]
       },

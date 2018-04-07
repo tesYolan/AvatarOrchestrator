@@ -25,6 +25,7 @@ module.exports = {
     chat: '8004',
     unknown: '5999'
   },
+
   stream:
   {
     listenIp: process.env.STREAM_IP,

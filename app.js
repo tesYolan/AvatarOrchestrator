@@ -1,13 +1,7 @@
-var mongoose = require('mongoose')
-var config = require('./config/config')
 var logger = require('./models/Logger')
-var url = 'mongodb://' + config.mongo.listenIp + ':' + config.mongo.listenPort + '/instances'
 var Server = require('./models/Server')
+var connection = require('./models/mongoose_manager.js')
 process.title = 'rest_for_head'
-mongoose.Promise = global.Promise
-mongoose.connect(url, { useMongoClient: true })
-var db = mongoose.connection
-db.on('error', logger.error.bind(console, 'connection error:'))
 const server = new Server()
 server.listen({})
 server.on('new-connection', (connection) => {

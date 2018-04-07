@@ -42,6 +42,8 @@ services:
             - RTP_AUDIO_PORT=5002
             - RTP_VIDEO_IP=0.0.0.0
             - RTP_VIDEO_PORT=5005
+            - MONGO_IP=0.0.0.0
+            - MONGO_PORT=27017
         links:
             - mongodb
             - nginx

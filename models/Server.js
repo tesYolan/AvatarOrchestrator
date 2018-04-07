@@ -116,15 +116,12 @@ class Server extends EventEmitter {
     // server.listen(app.get('port'), function () 
     this.server_ = http.createServer(app)
     this.server = https.createServer(this.tls, app => {
-      // TODO message for not here.
     })
-    // TODO where should this funciton be.
     this.server.listen(config.protoo.listenPort, config.protoo.listenIp, function () {
-      logger.info('Express server is listening on port ' + config.protoo.listenPort)
+      logger.info('Protoo server is listening on port ' + config.protoo.listenPort)
     })
-    // TODO http requests.
     this.server_.listen(config.http.listenPort)
-    logger.info('listening http on port: ' + config.http.listenPort)
+    logger.info('API listening http on port: ' + config.http.listenPort)
   }
 
   startSocketServer () {

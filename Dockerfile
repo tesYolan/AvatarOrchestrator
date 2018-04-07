@@ -24,4 +24,5 @@ RUN mkdir -p /home/node/app/mediasoup-demo/app && cp -a /tmp/mediasoup-demo/app/
 
 WORKDIR /home/node/app/
 COPY . /home/node/app
+
 User node
