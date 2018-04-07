@@ -12,7 +12,7 @@ var client = new zerorpc.Client({timeout: (300000), heartbeatInterval: (Number.M
  * @returns {undefined}
  */
 module.exports.createSession = function createSession (name, numPort, callback) {
-  client.connect('tcp://' + config.docker_ip + ':' + numPort)
+  client.connect('tcp://' + 'localhost' + ':' + numPort)
   client.invoke('create_tmux', {'instance_name': name}, callback)
 }
 
@@ -25,7 +25,7 @@ module.exports.createSession = function createSession (name, numPort, callback) 
  * @returns {undefined}
  */
 module.exports.stopSession = function stopSession (name, numPort, callback) {
-  client.connect('tcp://' + config.docker_ip + ':' + numPort)
+  client.connect('tcp://' + 'localhost' + ':' + numPort)
   client.invoke('delete_session', {'instance_name': name}, callback)
 }
 
@@ -36,6 +36,6 @@ module.exports.stopSession = function stopSession (name, numPort, callback) {
  * @param callback - callback with information about the invocation.
  */
 module.exports.sdpSession = function sdpSession (type, numPort, callback) {
-  client.connect('tcp://' + config.docker_ip + ':' + numPort)
+  client.connect('tcp://' + 'localhost' + ':' + numPort)
   client.invoke('sdp_description', {'mediaType': type}, callback)
 }

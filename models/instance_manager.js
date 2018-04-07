@@ -40,7 +40,7 @@ module.exports.createInstance = function createInstance (req, res, next) {
       Entrypoint: [config.docker.bash, '-c', config.docker.script],
       Env: ['DISPLAY=:' + String(config.docker.display)],
       ExposedPorts: { [config.docker.http]: {}, [config.docker.https]: {}, [config.docker.websocket]: {}, [config.docker.webbridge]: {}, [config.docker.rpc]: {}, [config.docker.unknown]: {} },
-      Volumes: { '/tmp/.X11-unix': {}, '/root/hansonrobotics/hr_launchpad':{} },
+      Volumes: { '/tmp/.X11-unix': {}, '/root/hansonrobotics/hr_launchpad': {} },
       HostConfig: {
         'PortBindings': {
           [config.docker.http]: [{ 'HostPort': String(display[1][0]) }],
