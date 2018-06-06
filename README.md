@@ -1,6 +1,6 @@
 # Easy Installation
-Besure to have [docker](https://docs.docker.com/install/) and [docker-compose](https://docs.docker.com/compose/install/#install-compose) are installed.
-* Unfortunatley we need to install local dependencies for now, otherwise different libraries may not be found. Thus a user even if they may opt not to use on their system, installing packages is needed
+Be sure to have [docker](https://docs.docker.com/install/) and [docker-compose](https://docs.docker.com/compose/install/#install-compose) are installed.
+* Unfortunately we need to install local dependencies for now, otherwise different libraries may not be found. Thus a user even if they may opt not to use on their system, installing packages is needed
 ```
 git clone --recursive https://github.com/tesyolan/Restforhead.git
 cd Restforhead
@@ -8,7 +8,7 @@ npm install
 ./build.sh
 docker-compose up
 ```
-# Manaual Installation
+# Manual Installation
 * Install docker and docker-compose
 * Install mongo
 * Install docker
