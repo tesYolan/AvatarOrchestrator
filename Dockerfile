@@ -4,7 +4,7 @@ RUN apt-get update
 RUN apt-get install -y python-pip python-dev wget
 RUN apt-get install -y libzmq3-dev
 RUN ldconfig
-RUN pip install pyzmq zerorpc
+RUN pip install pyzmq zerorpc gevent==1.1
 ENV NPM_CONFIG_PREFIX /home/node/.npm-global
 RUN npm install -g gulp-cli
 ENV PATH $PATH:/home/node/.npm-global/bin
