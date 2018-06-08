@@ -1,7 +1,7 @@
 var zerorpc = require('zerorpc')
 // TODO refactor this out. Does this work???
 var client = new zerorpc.Client()
-client.connect('tcp://127.0.0.1:3111')
+client.connect('tcp://' + String(process.env.RPC_IP) + ':' + String(process.env.RPC_PORT))
 
 /**
  * createDisplay
