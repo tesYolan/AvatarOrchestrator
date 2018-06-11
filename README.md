@@ -7,7 +7,7 @@ cd Restforhead
 npm install
 ./build.sh
 ```
-* To run, which would require promopt for password to set permission for `docker.sock`: 
+* To run, which would require prompt for password to set permission for mounting `/var/docker/docker.sock` into the docker to create new containers with the mounted operation: 
 ```
 ./run-docker.sh
 ```
