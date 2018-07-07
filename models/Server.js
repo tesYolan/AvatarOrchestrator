@@ -103,7 +103,6 @@ class Server extends EventEmitter {
         logger.error("get's to error")
         logger.error(err)
         res.status(400).send(err);
-        // res.send({"type": "error", "message": err})
         // TODO is this enough. This isn't working.
         // Here should i list every possible variations of the error.
         // List all errors as indicators for the system.

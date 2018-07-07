@@ -7,7 +7,7 @@
     "postinstall": "concurrently \"npm run install_client\" \"npm run install_admin\"",
     "install_client": "cd mediasoup-demo/app && npm install",
     "install_admin": "cd Talk-To-Sophia-Admin && npm install",
-    "test": "concurrently --kill-others -s first \"mocha\" \"python py-app/misc.py\"",
+    "test": "concurrently --kill-others -s first \"mocha \" \"python py-app/misc.py\"",
     "start-server": "nodemon app.js",
     "run-display": "python py-app/misc.py",
     "start-admin": "cd Talk-To-Sophia-Admin && npm start",

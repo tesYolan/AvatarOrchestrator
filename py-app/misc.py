@@ -2,25 +2,25 @@ import os
 import socket
 import zerorpc
 
-class Misc: 
-    def __init__(self): 
-        self.displays = {} 
+class Misc:
+    def __init__(self):
+        self.displays = {}
         self.ports = {}
         self.display = os.environ['DISPLAY']
         self.LOG_LEVEL = 'error' # possible commands, quiet, panic, fatal, error, warning, info...
 
-    def create_display(self,instance_name,num_ports): 
+    def create_display(self,instance_name,num_ports):
         self.displays[instance_name] = self.display
         ports = self.get_free_ports(num_ports)
         self.ports[instance_name] = ports
         return self.display, ports
 
-    def stop_display(self,instance_name): 
+    def stop_display(self,instance_name):
         del self.displays[instance_name]
         del self.ports[instance_name]
         return True
 
-    def get_port(self,name): 
+    def get_port(self,name):
         return self.get_free_ports(1)
 
     def get_free_ports(self,number_of_ports):

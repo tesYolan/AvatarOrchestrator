@@ -52,7 +52,7 @@ module.exports.createInstance = function createInstance (req, res, next) {
           [config.docker.ros]: [{ 'HostPort': String(display[1][6]) }],
           [config.docker.chat]: [{ 'HostPort': String(display[1][7]) }]
         },
-        'Binds': [ '/tmp/.X11-unix:/tmp/.X11-unix:rw', '/home/tesfa/clone_dir/hr_launchpad:/root/hansonrobotics/hr_launchpad' ],
+        // 'Binds': [ '/tmp/.X11-unix:/tmp/.X11-unix:rw', '/home/tesfa/clone_dir/hr_launchpad:/root/hansonrobotics/hr_launchpad' ],
         'Privileged': true
         // "Devices": ["/dev/snd","/dev/snd"]
       },
