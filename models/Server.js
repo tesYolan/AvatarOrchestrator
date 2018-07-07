@@ -112,6 +112,7 @@ class Server extends EventEmitter {
       logger.error('production ' + err.message)
     })
     app.set('appName', 'rest_for_head')
+    
     // server.listen(app.get('port'), function ()
     this.server_ = http.createServer(app)
     this.server = https.createServer(this.tls, app => {
