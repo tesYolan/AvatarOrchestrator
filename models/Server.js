@@ -6,7 +6,6 @@ var cors = require('cors')
 var instanceRouter = require('../routes/routesInstance')
 var configurationRouter = require('../routes/routesConfiguration')
 
-
 var config = require('../config/config')
 var express = require('express')
 var Room = require('./Room')
