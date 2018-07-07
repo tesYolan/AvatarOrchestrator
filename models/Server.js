@@ -91,7 +91,6 @@ class Server extends EventEmitter {
     app.use(bodyParser.json())
     app.use(validator())
     app.use(cors())
-
     // TODO refactor this to handle
     // app.use('/stream', express.static(path.join(__dirname, '/../stream')))
     app.use(instanceRouter)
@@ -109,7 +108,7 @@ class Server extends EventEmitter {
     }
 
     app.use(function (err, req, res, next) {
-      res.send({"type" : "error", "message" : err})
+      res.send(err)
       logger.error('production ' + err.message)
     })
     app.set('appName', 'rest_for_head')
