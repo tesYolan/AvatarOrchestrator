@@ -16,16 +16,16 @@ logger.level = 'debug' || 'info' || 'log'
 var docker = new Docker({socketPath: '/var/run/docker.sock'})
 
 /**
- * createInstance code to create instance. The creates creates and starts the instance.
+ * createInstance code to create instance. The creates creates and starts the instance. 
  *
  * @param req - expected format in the JSON "instance_name": "valid_docker_name", "vision_tool" : "cmt", "chatbot" : "opencog" . Besides giving the instance_name a vaild name for docker which is [ a-zA-Z0-9_ ]+, it is expected vision_tool values are pi_vision/cmt. chatbot valid values are opencog/AIML
  * @param res - Response is going to be for valid system. ('Created Instance ' + id)
- * For invalid system states, the response is yet to thought out.
- * @param next - Invalid states go this response.
+ * For invalid system states, the response is yet to thought out. 
+ * @param next - Invalid states go this response. 
  * @returns {undefined}
  */
 module.exports.createInstance = function createInstance (req, res, next) {
-  // TODO here validate the request that I am sending back.
+  // TODO here validate the request that I am sending back. 
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     return res.status(422).json({errors: errors.mapped()})
@@ -57,7 +57,7 @@ module.exports.createInstance = function createInstance (req, res, next) {
         // "Devices": ["/dev/snd","/dev/snd"]
       },
       Tty: true,
-      // TODO don't run system command this creates delete command for container and stop the system.
+      // TODO don't run system command this creates delete command for container and stop the system. 
       // Cmd: ['/bin/bash', '-c', 'hr run sophia_body'],
       Cmd: ['/bin/bash'],
       OpenStdin: false,
