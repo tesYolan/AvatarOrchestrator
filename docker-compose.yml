@@ -3,7 +3,7 @@ services:
     node:
         image: "node:app"
         working_dir: /home/node/app
-        user: node
+        user: root
         #environment:
         #    - NODE_ENV=production
         #    
@@ -11,7 +11,7 @@ services:
         volumes:
             - ./:/home/node/app:rw
             - /home/node/app/node_modules
-            - /var/run/docker.sock:/var/run/docker.sock
+            - /var/run/docker.sock:/var/run/docker.sock:rw
             - /tmp/.X11-unix:/tmp/.X11-unix:rw
         ports:
             - 3000:3000
@@ -23,7 +23,7 @@ services:
             - DISPLAY=:0
             - DOMAIN=localhost
             - DOCKER_IP=0.0.0.0 
-            - DOCKER_IMAGE=hanson:paper
+            - DOCKER_IMAGE=hanson:nogpufinal
             - STREAM_IP=localhost
             - STREAM_PORT=5443
             - PROTOO_IP=0.0.0.0

@@ -100,7 +100,7 @@ class Server extends EventEmitter {
       app.use(function (err, req, res, next) {
         logger.error("get's to error")
         logger.error(err)
-        res.json(err)
+        res.status(400).send(err);
         // TODO is this enough. This isn't working.
         // Here should i list every possible variations of the error.
         // List all errors as indicators for the system.
@@ -112,7 +112,7 @@ class Server extends EventEmitter {
       logger.error('production ' + err.message)
     })
     app.set('appName', 'rest_for_head')
-
+    
     // server.listen(app.get('port'), function () 
     this.server_ = http.createServer(app)
     this.server = https.createServer(this.tls, app => {

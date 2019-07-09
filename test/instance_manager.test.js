@@ -1,6 +1,6 @@
 /**
- * This test is to routes and creation checks. 
- * 
+ * This test is to routes and creation checks.
+ *
  */
 var mongoose = require('mongoose')
 var request = require('supertest')

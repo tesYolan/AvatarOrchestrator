@@ -2,7 +2,7 @@
 export MONGO_IP=localhost
 export MONGO_PORT=27017
 export DOCKER_IP=localhost
-export DOCKER_IMAGE=hanson:nogpufinal  # changed it from hanson:latest
+export DOCKER_IMAGE=hanson:nogpufinal # changed it from hanson:latest
 export STREAM_IP=localhost
 export STREAM_PORT=5443
 export PROTOO_IP=0.0.0.0
@@ -22,5 +22,4 @@ export RTP_AUDIO_PORT=5002
 export RTP_VIDEO_IP=localhost
 export RTP_VIDEO_PORT=5005
 
-# Run the code.
-npm run deploy
+npm test

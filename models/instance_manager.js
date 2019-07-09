@@ -52,7 +52,7 @@ module.exports.createInstance = function createInstance (req, res, next) {
           [config.docker.ros]: [{ 'HostPort': String(display[1][6]) }],
           [config.docker.chat]: [{ 'HostPort': String(display[1][7]) }]
         },
-        'Binds': [ '/tmp/.X11-unix:/tmp/.X11-unix:rw', '/home/tesfa/clone_dir/hr_launchpad:/root/hansonrobotics/hr_launchpad' ],
+        // 'Binds': [ '/tmp/.X11-unix:/tmp/.X11-unix:rw', '/home/tesfa/clone_dir/hr_launchpad:/root/hansonrobotics/hr_launchpad' ],
         'Privileged': true
         // "Devices": ["/dev/snd","/dev/snd"]
       },
@@ -67,7 +67,8 @@ module.exports.createInstance = function createInstance (req, res, next) {
       name: req.body.instance_name
     }, function createInstanceforDB (err, container) {
       if (err) {
-        logger.error('error creating container')
+        logger.error('error creating the container')
+        console.log(err)
         return next(err)
       }
 
@@ -125,9 +126,9 @@ module.exports.createInstance = function createInstance (req, res, next) {
 /**
  * deleteAllInstances
  *
- * @param req - not used. 
+ * @param req - not used.
  * @param res - gives out the deleted system.
- * @param next - error is redirected here. 
+ * @param next - error is redirected here.
  * @returns {undefined}
  */
 module.exports.deleteAllInstances = function deleteAllInstances (req, res, next) {
@@ -205,7 +206,7 @@ module.exports.incrementInstance = function incrementInstance (req, res, next) {
 
 /**
  * decrementInstance - not used. Removed in next major refactoring.
- * @deprecated Using mediasoup. Delete the next system. 
+ * @deprecated Using mediasoup. Delete the next system.
  * @param req
  * @param res
  * @param next
@@ -224,8 +225,8 @@ module.exports.decrementInstance = function decrementInstance (req, res, next) {
 /**
  * deleteSpecificInstance
  *
- * @param req - req.params.instanceId represents the instance to delete. 
- * @param res - the Mongo delete response. 
+ * @param req - req.params.instanceId represents the instance to delete.
+ * @param res - the Mongo delete response.
  * @param next - Error holder
  * @returns {undefined}
  */
@@ -267,10 +268,10 @@ module.exports.deleteSpecificInstance = function deleteSpecificInstance (req, re
 }
 
 /**
- * updateInstance 
+ * updateInstance
  * Indicator for whether the instance is started or stopped. It toggles the state.
  *
- * @param req - req.params.instanceId holds instance to stopped. 
+ * @param req - req.params.instanceId holds instance to stopped.
  * @param res - return the instance that has been stopped/started.
  * @param next - Error
  * @returns {undefined}
@@ -289,7 +290,7 @@ module.exports.updateInstance = function updateInstance (req, res, next) {
     logger.info(JSON.stringify(instance.instance_values[0]))
     logger.info(req.body.started)
     if (req.body.started === 'true') {
-      // TODO the following command terminates the detached command 
+      // TODO the following command terminates the detached command
       RPCManager.createSession(instance.name, instance.instance_values[0].RPC, function startedSession (err, instance) {
         if (err) logger.error(err)
         logger.info('Starting the session')
@@ -322,8 +323,8 @@ module.exports.updateInstance = function updateInstance (req, res, next) {
 /**
  * getInstanceDetail
  *
- * @param req - req.params.instanceId the instance to get the detail. 
- * @param res - response is the instance stored in mongodb. 
+ * @param req - req.params.instanceId the instance to get the detail.
+ * @param res - response is the instance stored in mongodb.
  * @param next - Error if the instance not found in db.
  * @returns {undefined}
  */
@@ -341,7 +342,7 @@ module.exports.getInstanceDetail = function getInstanceDetail (req, res, next) {
  * updateInstances - Same as updateInstance but for all the instances. Currently not used, as the logic doesn't yet make sense.
  *
  * @param req - not used
- * @param res - All the instances. 
+ * @param res - All the instances.
  * @param next - Error
  * @returns {undefined}
  */
@@ -377,7 +378,7 @@ module.exports.updateInstances = function updateInstances (req, res, next) {
  *
  * @param req - not used
  * @param res - all the instances in db. Note this may not be consistent with the docker
- * @param next - error if there is mistake in the db. 
+ * @param next - error if there is mistake in the db.
  * @returns {undefined}
  */
 module.exports.getInstances = function getInstances (req, res, next) {
@@ -386,7 +387,6 @@ module.exports.getInstances = function getInstances (req, res, next) {
       logger.error(err)
       return next(err)
     }
-    logger.info(instances.length)
-    res.json(instances)
+    res.json(instances);
   })
 }
