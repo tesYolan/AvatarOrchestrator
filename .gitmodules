@@ -1,6 +1,6 @@
 [submodule "Talk-To-Sophia-Admin"]
-	path = Talk-To-Sophia-Admin
-	url = https://github.com/tesYolan/Talk-To-Sophia-Admin
+	path = Talk-To-Avatar-Admin
+	url = https://github.com/tesYolan/Talk-To-Avatar-Admin
 [submodule "mediasoup-demo"]
 	path = mediasoup-demo
 	url = https://github.com/tesYolan/mediasoup-demo
