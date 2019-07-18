@@ -13,10 +13,10 @@ ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/usr/local/lib:/usr/lib
 COPY package.json /tmp/app/package.json
 RUN cd /tmp/app && npm install
 RUN mkdir -p /home/node/app/ && cp -a /tmp/app/node_modules /home/node/app/
-# copy the Talk-to-sophia-admin files
-COPY Talk-To-Sophia-Admin/package.json /tmp/talk-to-sophia/package.json
-RUN cd /tmp/talk-to-sophia && npm install
-RUN mkdir -p /home/node/app/Talk-To-Sophia-Admin/ && cp -a /tmp/talk-to-sophia/node_modules /home/node/app/Talk-To-Sophia-Admin/
+# copy the Talk-to-Avatar-admin files
+COPY Talk-To-Avatar-Admin/package.json /tmp/talk-to-avatar/package.json
+RUN cd /tmp/talk-to-avatar && npm install
+RUN mkdir -p /home/node/app/Talk-To-Avatar-Admin/ && cp -a /tmp/talk-to-avatar/node_modules /home/node/app/Talk-To-Avatar-Admin/
 # copy the mediasoup-demo files
 COPY mediasoup-demo/app/package.json /tmp/mediasoup-demo/app/package.json
 RUN cd /tmp/mediasoup-demo/app/ && npm install

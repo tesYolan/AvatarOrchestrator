@@ -6,11 +6,11 @@
   "scripts": {
     "postinstall": "concurrently \"npm run install_client\" \"npm run install_admin\"",
     "install_client": "cd mediasoup-demo/app && npm install",
-    "install_admin": "cd Talk-To-Sophia-Admin && npm install",
+    "install_admin": "cd Talk-To-Avatar-Admin && npm install",
     "test": "concurrently --kill-others -s first \"mocha \" \"python py-app/misc.py\"",
     "start-server": "nodemon app.js",
     "run-display": "python py-app/misc.py",
-    "start-admin": "cd Talk-To-Sophia-Admin && npm start",
+    "start-admin": "cd Talk-To-Avatar-Admin && npm start",
     "start-client": "cd mediasoup-demo/app && gulp live",
     "deploy": "concurrently --kill-others \"npm run start-server\" \"npm run run-display\" \"npm run start-admin\" \"npm run start-client\""
   },
