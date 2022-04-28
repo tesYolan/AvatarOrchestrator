@@ -20,7 +20,7 @@
   "author": "Tesfa Yohannes",
   "license": "ISC",
   "dependencies": {
-    "async": "^2.4.1",
+    "async": "^2.6.4",
     "body-parser": "^1.17.1",
     "connect-flash": "^0.1.1",
     "cors": "^2.8.3",
