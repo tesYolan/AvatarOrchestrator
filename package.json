@@ -30,7 +30,7 @@
     "express-validator": "^4.2.1",
     "mediasoup": "^2.0.3",
     "mocha": "^3.3.0",
-    "mongoose": "^4.9.9",
+    "mongoose": "^4.13.21",
     "morgan": "^1.8.1",
     "ngx-flash-messages": "^1.0.4",
     "node-docker-api": "^1.1.12",
