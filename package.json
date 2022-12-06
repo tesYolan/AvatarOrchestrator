@@ -21,11 +21,11 @@
   "license": "ISC",
   "dependencies": {
     "async": "^2.4.1",
-    "body-parser": "^1.17.1",
+    "body-parser": "^1.20.1",
     "connect-flash": "^0.1.1",
     "cors": "^2.8.3",
     "dockerode": "^2.4.3",
-    "express": "^4.15.2",
+    "express": "^4.18.2",
     "express-session": "^1.15.6",
     "express-validator": "^4.2.1",
     "mediasoup": "^2.0.3",
@@ -42,7 +42,7 @@
     "zerorpc": "^0.9.7"
   },
   "devDependencies": {
-    "browser-sync": "^2.18.12",
+    "browser-sync": "^2.27.10",
     "chai": "^4.1.2",
     "concurrently": "^3.5.0",
     "eslint": "~4.18.2",
@@ -54,7 +54,7 @@
     "grunt": "~0.4.5",
     "grunt-contrib-jshint": "~0.10.0",
     "grunt-contrib-nodeunit": "~0.4.1",
-    "grunt-contrib-watch": "~0.6.1",
+    "grunt-contrib-watch": "~1.1.0",
     "grunt-jsdoc": "^2.1.0",
     "mocha": "^3.5.3",
     "nodemon": "^1.11.0",
